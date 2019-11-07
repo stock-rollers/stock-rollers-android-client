@@ -3,6 +3,7 @@ package edu.cnm.deepdive.stockrollerandroidclient.service;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -26,7 +27,7 @@ public class GoogleSignInService {
         .requestEmail()
         .requestId()
         .requestProfile()
-        .requestIdToken(BuildConfig.CLIENT_ID)
+//        .requestIdToken(BuildConfig.CLIENT_ID)
         .build();
     client = GoogleSignIn.getClient(applicationContext, options);
   }
@@ -75,6 +76,7 @@ public class GoogleSignInService {
       task = GoogleSignIn.getSignedInAccountFromIntent(data);
       account.setValue(task.getResult(ApiException.class));
     } catch (ApiException e) {
+      Log.d("GoogleSignIn", e.getMessage(), e);
       update(e);
     }
     return task;
