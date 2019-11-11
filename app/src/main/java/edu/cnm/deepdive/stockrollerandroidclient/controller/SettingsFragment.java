@@ -1,5 +1,15 @@
 package edu.cnm.deepdive.stockrollerandroidclient.controller;
 
-public class SettingsFragment {
 
-}
+import android.os.Bundle;
+import edu.cnm.deepdive.stockrollerandroidclient.R;
+
+/*/public class SettingsFragment extends PreferenceFragmentCompat {
+
+  @Override
+  public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
+
+  setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+ }
+}*/

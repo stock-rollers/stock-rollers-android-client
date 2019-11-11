@@ -4,4 +4,10 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
+  <FrameLayout
+    android:id="@+id/settings"
+    android:name="edu.cnm.deepdive.stockrollerandroidclient.SettingsFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+
 </LinearLayout>
