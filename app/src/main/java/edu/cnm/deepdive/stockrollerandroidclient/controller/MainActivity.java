@@ -68,10 +68,6 @@ public class MainActivity extends AppCompatActivity {
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     homeFragment = new HomeFragment();
     addFragment(homeFragment, true);
-    FloatingActionButton fab = findViewById(R.id.fab);
-    fab.setOnClickListener((view) -> {
-
-    });
   }
 
 

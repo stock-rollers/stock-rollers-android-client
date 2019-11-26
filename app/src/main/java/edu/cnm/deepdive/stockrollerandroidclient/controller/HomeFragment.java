@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
@@ -23,6 +24,10 @@ public class HomeFragment extends Fragment {
       @Nullable Bundle savedInstanceState) {
     viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
     View view = inflater.inflate(R.layout.fragment_home, container, false);
+    FloatingActionButton fab = view.findViewById(R.id.fab);
+    fab.setOnClickListener((v) -> {
+
+    });
     observeViewModel(viewModel);
     return view;
   }
