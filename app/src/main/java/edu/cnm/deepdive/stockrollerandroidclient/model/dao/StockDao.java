@@ -20,6 +20,9 @@ public interface StockDao {
   @Update
   int update(Stock stock);
 
+  @Query("SELECT * FROM stock WHERE nasdaq_name LIKE :nasdaqName ORDER BY nasdaq_name ASC")
+  LiveData<List<Stock>> search(String nasdaqName);
+
   @Delete
   int delete(Stock stock);
 }

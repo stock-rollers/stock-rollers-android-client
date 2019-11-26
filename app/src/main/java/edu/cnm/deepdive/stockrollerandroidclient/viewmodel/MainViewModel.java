@@ -1,17 +1,23 @@
 package edu.cnm.deepdive.stockrollerandroidclient.viewmodel;
 
 import android.app.Application;
+import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.History;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockrollersService;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -24,6 +30,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   private MutableLiveData<Stock> stockMutableLiveData;
   private MutableLiveData<History> historyMutableLiveData;
   private MutableLiveData<String> stockSearch;
+  private MutableLiveData<List<Stock>> searchResult;
 
   public MainViewModel(@NonNull Application application) {
     super(application);
@@ -33,10 +40,21 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     stockMutableLiveData = new MutableLiveData<>();
     historyMutableLiveData = new MutableLiveData<>();
     stockSearch = new MutableLiveData<>();
+//    searchResult = Transformations.switchMap(stockSearch, (data) -> {
+//      if (data == null) {
+//        return new MutableLiveData<List<Stock>>(Collections.EMPTY_LIST);
+//      } else {
+//        return database.getStockDao().search(data);
+//      }
+//    });
+  }
+
+  public LiveData<String> getStockSearch() {
+    return stockSearch;
   }
 
   public void setStockSearch(String name) {
-
+    stockSearch.setValue(name);
   }
 
   public LiveData<Stock> getStocks() {
@@ -55,6 +73,23 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
             stockMutableLiveData.postValue(stock);
         })
     );
+  }
+
+  private static class SearchData extends MediatorLiveData<Pair<Long, String>> {
+    public SearchData(LiveData<Long> stockId, LiveData<String> symbol) {
+      addSource(stockId, new Observer<Long>() {
+        @Override
+        public void onChanged(Long id) {
+          setValue(Pair.create(id, symbol.getValue()));
+        }
+      });
+      addSource(symbol, new Observer<String>() {
+        @Override
+        public void onChanged(String ticker) {
+          setValue(Pair.create(stockId.getValue(), ticker));
+        }
+      });
+    }
   }
 
 
