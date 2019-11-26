@@ -1,8 +1,8 @@
 <resources>
   <string name="app_name">Stock Roller</string>
   <string name="title_home">Home</string>
-  <string name="title_dashboard">Dashboard</string>
-  <string name="title_notifications">Notifications</string>
+  <string name="title_dashboard">Search</string>
+  <string name="title_notifications">Profile</string>
   <string name="login_failure_message">Unable to login, try again.</string>
   <string name="title_activity_settings">Settings</string>
 </resources>

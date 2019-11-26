@@ -23,6 +23,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   private StockrollersService service;
   private MutableLiveData<Stock> stockMutableLiveData;
   private MutableLiveData<History> historyMutableLiveData;
+  private MutableLiveData<String> stockSearch;
 
   public MainViewModel(@NonNull Application application) {
     super(application);
@@ -31,6 +32,11 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     service = StockrollersService.getInstance();
     stockMutableLiveData = new MutableLiveData<>();
     historyMutableLiveData = new MutableLiveData<>();
+    stockSearch = new MutableLiveData<>();
+  }
+
+  public void setStockSearch(String name) {
+
   }
 
   public LiveData<Stock> getStocks() {

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -16,6 +18,7 @@ import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 public class SearchFragment extends Fragment {
 
   private MainViewModel viewModel;
+  private SearchView stockSearch;
 
   @Nullable
   @Override
@@ -23,8 +26,24 @@ public class SearchFragment extends Fragment {
       @Nullable Bundle savedInstanceState) {
     viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
     View view = inflater.inflate(R.layout.fragment_search, container, false);
+    setUpSearch(view);
     observeViewModel(viewModel);
     return view;
+  }
+
+  private void setUpSearch(View view) {
+    stockSearch = view.findViewById(R.id.search_stock);
+    stockSearch.setOnQueryTextListener(new OnQueryTextListener() {
+      @Override
+      public boolean onQueryTextSubmit(String s) {
+        return false;
+      }
+
+      @Override
+      public boolean onQueryTextChange(String s) {
+        return false;
+      }
+    });
   }
 
   @Override
