@@ -13,7 +13,7 @@ import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 
-public class SearchFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
   private MainViewModel viewModel;
 
@@ -22,7 +22,7 @@ public class SearchFragment extends Fragment {
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-    View view = inflater.inflate(R.layout.fragment_search, container, false);
+    View view = inflater.inflate(R.layout.fragment_home, container, false);
     observeViewModel(viewModel);
     return view;
   }
@@ -40,5 +40,4 @@ public class SearchFragment extends Fragment {
       }
     });
   }
-
 }

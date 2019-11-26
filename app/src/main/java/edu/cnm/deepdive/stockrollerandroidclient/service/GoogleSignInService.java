@@ -57,11 +57,15 @@ public class GoogleSignInService {
   private void update(GoogleSignInAccount account) {
     this.account.setValue(account);
     this.exception.setValue(null);
+    if (account != null) {
+      Log.d("oauth", String.format(BuildConfig.OAUTH_HEADER, account.getIdToken()));
+    }
   }
 
   private void update(Exception ex) {
     account.setValue(null);
     exception.setValue(ex);
+    Log.d("oauth", ex.getMessage(), ex);
   }
 
   public void startSignIn(Activity activity, int requestCode) {
@@ -74,7 +78,7 @@ public class GoogleSignInService {
     Task<GoogleSignInAccount> task = null;
     try {
       task = GoogleSignIn.getSignedInAccountFromIntent(data);
-      account.setValue(task.getResult(ApiException.class));
+      update(task.getResult(ApiException.class));
     } catch (ApiException e) {
       Log.d("GoogleSignIn", e.getMessage(), e);
       update(e);
