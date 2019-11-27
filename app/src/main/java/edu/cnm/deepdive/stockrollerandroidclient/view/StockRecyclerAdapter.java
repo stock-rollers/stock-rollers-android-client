@@ -12,41 +12,34 @@ import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockrollersService;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.StockHolder;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
 
-  private ArrayList<Stock> stocks = new ArrayList<>();
-  private final Context context;
-  private final StockrollersService stock;
+  private List<Stock> stocks;
   private Stock stockEntity;
 
-  public StockRecyclerAdapter(Context context, StockrollersService stock, Stock entityStock) {
-    this.context = context;
-    this.stock = stock;
-    this.stockEntity = stockEntity;
+  public StockRecyclerAdapter(List<Stock> stocks) {
+    this.stocks = new LinkedList<>(stocks);
   }
 
-  public void updateStocks(List<Stock> stocks) {
-    this.stocks.clear();
-    this.stocks.addAll(stocks);
-    notifyDataSetChanged();
+  public void addStockToView(Stock stock) {
+    stocks.add(0, stock);
+    notifyItemChanged(0);
   }
 
   @NonNull
   @Override
   public StockHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(context).inflate(R.layout.list_stocks, parent, false);
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_stocks, parent, false);
     return new StockHolder(view);
   }
 
   @Override
   public void onBindViewHolder(@NonNull StockHolder holder, int position) {
-  TextView name = (TextView) holder.textView.findViewById(R.id.stock_name);
-  name.setText(stockEntity.getNasdaqName());
-
-  TextView price = (TextView) holder.textView.findViewById(R.id.stock_price);
-  price.setText(stockEntity.getPrice().intValue());
+    Stock stock = stocks.get(position);
+    holder.bind(position, stock);
   }
 
   @Override
@@ -56,11 +49,20 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
 
   public class StockHolder extends RecyclerView.ViewHolder {
 
-    public TextView textView;
+    private final View view;
+    public TextView name;
+    private TextView price;
 
-    private StockHolder(@NonNull View textView) {
-      super(textView);
-      this.textView = (TextView) textView;
+    public StockHolder(@NonNull View itemView) {
+      super(itemView);
+      name = itemView.findViewById(R.id.stock_name);
+      price = itemView.findViewById(R.id.stock_price);
+      view = itemView;
+    }
+
+    private void bind(int position, Stock stock) {
+      name.setText(stock.getNasdaqName());
+//      price.setText(stock.getPrice().toString());
     }
   }
 }
