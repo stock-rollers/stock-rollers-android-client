@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   package="edu.cnm.deepdive.stockrollerandroidclient">
 
   <uses-permission android:name="android.permission.INTERNET"/>
 
   <application
+    android:usesCleartextTraffic="true"
     android:name=".StockrollersApplication"
     android:allowBackup="false"
     android:icon="@mipmap/ic_launcher"
@@ -23,8 +25,7 @@
       android:name=".controller.SettingsActivity"
       android:label="@string/title_activity_settings"/>
 
-    <activity
-      android:name=".controller.LoginActivity">
+    <activity android:name=".controller.LoginActivity">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -33,7 +34,6 @@
       </intent-filter>
 
     </activity>
-
   </application>
 
 </manifest>

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.service.GoogleSignInService;
+import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,11 +24,20 @@ public class MainActivity extends AppCompatActivity {
   private HomeFragment homeFragment;
   private SearchFragment searchFragment;
   private ProfileFragment profileFragment;
+  private GoogleSignInService signInService;
+  private MainViewModel viewModel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setUpUI();
+    setupViewModel();
+    setupSignIn();
+  }
+
+  private void setupSignIn() {
+    signInService = GoogleSignInService.getInstance();
+    signInService.getAccount().observe(this, (account) -> viewModel.setAccount(account));
   }
 
   private void addFragment(Fragment fragment, boolean useStack) {
@@ -60,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
     super.onCreateOptionsMenu(menu);
     getMenuInflater().inflate(R.menu.options, menu);
     return true;
+  }
+
+  private void setupViewModel() {
+    viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+    getLifecycle().addObserver(viewModel);
   }
 
   private void setUpUI() {
@@ -109,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
 
   private void signOut() {
-    GoogleSignInService.getInstance().signOut()
+    signInService.getInstance().signOut()
         .addOnCompleteListener((task) -> {
           Intent intent = new Intent(this, LoginActivity.class);
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

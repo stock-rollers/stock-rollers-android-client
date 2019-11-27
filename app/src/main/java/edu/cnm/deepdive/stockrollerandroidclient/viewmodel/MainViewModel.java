@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.stockrollerandroidclient.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -10,6 +11,8 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.History;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
@@ -29,8 +32,8 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   private StockrollersService service;
   private MutableLiveData<Stock> stockMutableLiveData;
   private MutableLiveData<History> historyMutableLiveData;
-  private MutableLiveData<String> stockSearch;
-  private MutableLiveData<List<Stock>> searchResult;
+  private final MutableLiveData<GoogleSignInAccount> account;
+
 
   public MainViewModel(@NonNull Application application) {
     super(application);
@@ -39,22 +42,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     service = StockrollersService.getInstance();
     stockMutableLiveData = new MutableLiveData<>();
     historyMutableLiveData = new MutableLiveData<>();
-    stockSearch = new MutableLiveData<>();
-//    searchResult = Transformations.switchMap(stockSearch, (data) -> {
-//      if (data == null) {
-//        return new MutableLiveData<List<Stock>>(Collections.EMPTY_LIST);
-//      } else {
-//        return database.getStockDao().search(data);
-//      }
-//    });
-  }
-
-  public LiveData<String> getStockSearch() {
-    return stockSearch;
-  }
-
-  public void setStockSearch(String name) {
-    stockSearch.setValue(name);
+    account = new MutableLiveData<>();
   }
 
   public LiveData<Stock> getStocks() {
@@ -65,9 +53,14 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     return historyMutableLiveData;
   }
 
+  public void setAccount(GoogleSignInAccount account) {
+    this.account.setValue(account);
+  }
+
   public void getStock(String ticker) {
+    String token = getAuthorizationHeader(account.getValue());
     pending.add(
-      service.getStock(ticker)
+      service.getStock(token, ticker)
           .subscribeOn(Schedulers.from(executor))
           .subscribe((stock) -> {
             stockMutableLiveData.postValue(stock);
@@ -75,22 +68,11 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     );
   }
 
-  private static class SearchData extends MediatorLiveData<Pair<Long, String>> {
-    public SearchData(LiveData<Long> stockId, LiveData<String> symbol) {
-      addSource(stockId, new Observer<Long>() {
-        @Override
-        public void onChanged(Long id) {
-          setValue(Pair.create(id, symbol.getValue()));
-        }
-      });
-      addSource(symbol, new Observer<String>() {
-        @Override
-        public void onChanged(String ticker) {
-          setValue(Pair.create(stockId.getValue(), ticker));
-        }
-      });
-    }
-  }
 
+  private String getAuthorizationHeader(GoogleSignInAccount account) {
+    String token = getApplication().getString(R.string.oauth_header, account.getIdToken());
+    Log.d("OAuth2.0 token", token); // FIXME Remove before shipping.
+    return token;
+  }
 
 }

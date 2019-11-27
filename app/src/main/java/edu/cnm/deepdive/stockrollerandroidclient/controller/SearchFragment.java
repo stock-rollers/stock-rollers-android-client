@@ -36,6 +36,7 @@ public class SearchFragment extends Fragment {
     stockSearch.setOnQueryTextListener(new OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String s) {
+        viewModel.getStock(s);
         return false;
       }
 

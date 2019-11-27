@@ -10,7 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "BASE_URL", '"http://10.0.2.2.8080/stockrollers/"'
+        buildConfigField "String", "BASE_URL", '"http://10.0.2.2:18181/stockrollers/"'
         buildConfigField "String", "CLIENT_ID", '"762642106208-j8u4sq75j3nnjdvt4i6ckmajh18tm7rh.apps.googleusercontent.com"'
         buildConfigField "String", "OAUTH_HEADER", '"Bearer %s"'
     }
