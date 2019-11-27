@@ -33,7 +33,7 @@ public class ProfileFragment extends Fragment {
   }
 
   private void observeViewModel(MainViewModel viewModel) {
-    viewModel.getStocks().observe(this, new Observer<Stock>() {
+    viewModel.getStock().observe(this, new Observer<Stock>() {
       @Override
       public void onChanged(Stock stock) {
         //adapter.updateSkiResorts(skiResorts);
