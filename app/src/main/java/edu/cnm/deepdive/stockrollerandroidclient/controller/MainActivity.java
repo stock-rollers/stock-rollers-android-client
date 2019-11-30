@@ -21,9 +21,9 @@ public class MainActivity extends AppCompatActivity {
 
   private TextView mTextMessage;
   private FragmentManager manager = getSupportFragmentManager();
-  private HomeFragment homeFragment;
-  private SearchFragment searchFragment;
-  private ProfileFragment profileFragment;
+  private HomeFragment homeFragment = new HomeFragment();
+  private SearchFragment searchFragment = new SearchFragment();
+  private ProfileFragment profileFragment = new ProfileFragment();
   private GoogleSignInService signInService;
   private MainViewModel viewModel;
 
@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    homeFragment = new HomeFragment();
     addFragment(homeFragment, true);
   }
 
@@ -107,15 +106,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
       switch (item.getItemId()) {
         case R.id.navigation_home:
-          homeFragment = new HomeFragment();
           replaceFragment(homeFragment, false);
           return true;
         case R.id.navigation_dashboard:
-          searchFragment = new SearchFragment();
           replaceFragment(searchFragment, false);
           return true;
         case R.id.navigation_notifications:
-          profileFragment = new ProfileFragment();
           replaceFragment(profileFragment, false);
           return true;
       }

@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.History;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
+import edu.cnm.deepdive.stockrollerandroidclient.service.GoogleSignInService;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockrollersService;
 import io.reactivex.disposables.CompositeDisposable;
@@ -26,6 +27,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   private StockRollersDatabase database;
   private CompositeDisposable pending = new CompositeDisposable();
   private StockrollersService service;
+  private GoogleSignInService googleSignInService;
   private MutableLiveData<Stock> stockMutableLiveData;
   private MutableLiveData<History> historyMutableLiveData;
   private MutableLiveData<String> stockSearch;
@@ -44,6 +46,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     stockSearch = new MutableLiveData<>();
     stocks = new MutableLiveData<>();
     account = new MutableLiveData<>();
+    googleSignInService = GoogleSignInService.getInstance();
     refresh();
 //    searchResult = Transformations.switchMap(stockSearch, (data) -> {
 //      if (data == null) {
@@ -75,19 +78,23 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   }
 
   public void getStock(String ticker) {
-    String token = getAuthorizationHeader(account.getValue());
+    String token = getAuthorizationHeader();
     pending.add(
       service.getStock(token, ticker)
           .subscribeOn(Schedulers.from(executor))
           .subscribe((stock) -> {
             stockMutableLiveData.postValue(stock);
+            List<Stock> current = stocks.getValue();
+            current.add(stock);
+            stocks.postValue(current);
+            database.getStockDao().insert(stock);
         })
     );
   }
 
 
-  private String getAuthorizationHeader(GoogleSignInAccount account) {
-    String token = getApplication().getString(R.string.oauth_header, account.getIdToken());
+  private String getAuthorizationHeader() {
+    String token = getApplication().getString(R.string.oauth_header, googleSignInService.getAccount().getValue().getIdToken());
     Log.d("OAuth2.0 token", token); // FIXME Remove before shipping.
     return token;
   }

@@ -6,12 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockrollersService;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.StockHolder;
+import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,9 +27,19 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
     this.stocks = new LinkedList<>(stocks);
   }
 
+  public static StockRecyclerAdapter getInstance() {
+    return InstanceHolder.INSTANCE;
+  }
+
   public void addStockToView(Stock stock) {
-    stocks.add(0, stock);
-    notifyItemChanged(0);
+    stocks.add(stocks.size(), stock);
+    notifyItemChanged(stocks.size());
+  }
+
+  public void updateStocks(List<Stock> stocks) {
+    this.stocks.clear();
+    this.stocks.addAll(stocks);
+    notifyDataSetChanged();
   }
 
   @NonNull
@@ -64,5 +77,10 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
       name.setText(stock.getNasdaqName());
 //      price.setText(stock.getPrice().toString());
     }
+  }
+
+  private static class InstanceHolder {
+
+    private static final StockRecyclerAdapter INSTANCE = new StockRecyclerAdapter(Collections.emptyList());
   }
 }

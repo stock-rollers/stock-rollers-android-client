@@ -11,14 +11,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
+import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
+import java.util.List;
 
 public class SearchFragment extends Fragment {
 
   private MainViewModel viewModel;
   private SearchView stockSearch;
+  private RecyclerView recyclerView;
+  private StockRecyclerAdapter adapter;
 
   @Nullable
   @Override
@@ -27,7 +32,8 @@ public class SearchFragment extends Fragment {
     viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
     View view = inflater.inflate(R.layout.fragment_search, container, false);
     setUpSearch(view);
-    observeViewModel(viewModel);
+    recyclerView = view.findViewById(R.id.stock_list);
+    adapter = StockRecyclerAdapter.getInstance();
     return view;
   }
 
@@ -50,15 +56,14 @@ public class SearchFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-  }
 
-  private void observeViewModel(MainViewModel viewModel) {
-    viewModel.getStock().observe(this, new Observer<Stock>() {
+    viewModel.getStocks().observe(this, new Observer<List<Stock>>() {
       @Override
-      public void onChanged(Stock stock) {
-        //adapter.updateSkiResorts(skiResorts);
+      public void onChanged(List<Stock> stocks) {
+        adapter.updateStocks(stocks);
+        recyclerView.setAdapter(adapter);
+        recyclerView.getAdapter().notifyDataSetChanged();
       }
     });
   }
-
 }

@@ -24,6 +24,7 @@ public class HomeFragment extends Fragment {
   private ArrayList<Stock> stocks = new ArrayList<>();
   private Stock stockEntity;
   private Stock stock;
+  private StockRecyclerAdapter adapter = StockRecyclerAdapter.getInstance();
 
   @Nullable
   @Override
@@ -37,32 +38,25 @@ public class HomeFragment extends Fragment {
 //    fab.setOnClickListener((v) -> {
 //
 //    });
-    observeViewModel(viewModel);
+//    observeViewModel(viewModel);
     return view;
   }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-//    LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-//    recyclerView.setLayoutManager(layoutManager);
-    viewModel.getStocks().observe(this, stocks -> {
-      StockRecyclerAdapter adapter = new StockRecyclerAdapter(stocks);
-      recyclerView.setAdapter(adapter);
-//      recyclerView.getAdapter().notifyDataSetChanged();
+    viewModel.getStocks().observe(this, (stocks) -> {
+      StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks);
+      recyclerView.setAdapter(newAdapter);
+      recyclerView.getAdapter().notifyDataSetChanged();
     });
   }
 
   private void observeViewModel(MainViewModel viewModel) {
-//    viewModel.getStock().observe(this, new Observer<Stock>() {
+//    viewModel.getStocks().observe(this, new Observer<List<Stock>>() {
 //      @Override
-//      public void onChanged(Stock stock) {
-//        //adapter.updateSkiResorts(skiResorts);
-//      }
-//    });
-//    viewModel.stocks.observe(this, stocks1 -> {
-//      if(stocks1 != null && stocks1 instanceof List) {
-//        //adapter.updateStocks(stocks1);
+//      public void onChanged(List<Stock> stocks) {
+//        adapter.updateStocks(stocks);
 //      }
 //    });
   }
