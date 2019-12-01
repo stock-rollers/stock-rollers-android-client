@@ -2,11 +2,16 @@ package edu.cnm.deepdive.stockrollerandroidclient.model.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
 import java.util.LinkedList;
 
-@Entity
+@Entity(
+    indices = {
+      @Index(value = {"stock_id"}, unique = true)
+    }
+)
 public class Stock {
 
   //

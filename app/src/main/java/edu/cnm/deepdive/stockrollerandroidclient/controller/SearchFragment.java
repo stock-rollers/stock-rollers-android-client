@@ -22,7 +22,6 @@ public class SearchFragment extends Fragment {
 
   private MainViewModel viewModel;
   private SearchView stockSearch;
-  private RecyclerView recyclerView;
   private StockRecyclerAdapter adapter;
 
   @Nullable
@@ -32,7 +31,6 @@ public class SearchFragment extends Fragment {
     viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
     View view = inflater.inflate(R.layout.fragment_search, container, false);
     setUpSearch(view);
-    recyclerView = view.findViewById(R.id.stock_list);
     adapter = StockRecyclerAdapter.getInstance();
     return view;
   }
@@ -61,8 +59,6 @@ public class SearchFragment extends Fragment {
       @Override
       public void onChanged(List<Stock> stocks) {
         adapter.updateStocks(stocks);
-        recyclerView.setAdapter(adapter);
-        recyclerView.getAdapter().notifyDataSetChanged();
       }
     });
   }

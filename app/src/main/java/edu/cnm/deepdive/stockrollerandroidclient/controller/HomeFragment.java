@@ -33,6 +33,11 @@ public class HomeFragment extends Fragment {
     viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
     View view = inflater.inflate(R.layout.fragment_home, container, false);
     recyclerView = view.findViewById(R.id.stock_list);
+    viewModel.getStocks().observe(this, (stocks) -> {
+      StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks);
+      recyclerView.setAdapter(newAdapter);
+      recyclerView.getAdapter().notifyDataSetChanged();
+    });
 
 //    FloatingActionButton fab = view.findViewById(R.id.fab);
 //    fab.setOnClickListener((v) -> {
@@ -45,11 +50,6 @@ public class HomeFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    viewModel.getStocks().observe(this, (stocks) -> {
-      StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks);
-      recyclerView.setAdapter(newAdapter);
-      recyclerView.getAdapter().notifyDataSetChanged();
-    });
   }
 
   private void observeViewModel(MainViewModel viewModel) {
