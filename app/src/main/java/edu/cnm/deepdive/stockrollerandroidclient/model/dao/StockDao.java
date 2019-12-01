@@ -21,6 +21,12 @@ public interface StockDao {
   @Update
   int update(Stock stock);
 
+  @Query("SELECT * FROM stock")
+  LiveData<List<Stock>> getAll();
+
+  @Query("SELECT * FROM stock WHERE nasdaq_name = :nasdaqName")
+  Optional<Stock> getByName(String nasdaqName);
+
   @Query("SELECT * FROM stock WHERE nasdaq_name LIKE :nasdaqName ORDER BY nasdaq_name ASC")
   LiveData<List<Stock>> search(String nasdaqName);
 

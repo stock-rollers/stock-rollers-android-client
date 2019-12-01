@@ -16,7 +16,8 @@
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     android:queryHint="Search Stock"
-    android:iconifiedByDefault="false"/>
+    android:iconifiedByDefault="false"
+    android:imeOptions="actionNone"/>
 
   <ListView
     android:layout_width="match_parent"

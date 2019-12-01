@@ -42,7 +42,7 @@ public abstract class StockRollersDatabase extends RoomDatabase {
 
     static {
       INSTANCE =
-          Room.databaseBuilder(applicationContext, StockRollersDatabase.class, "ski_america_db")
+          Room.databaseBuilder(applicationContext, StockRollersDatabase.class, "stockrollers_db")
               .build();
     }
   }

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
+import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 import java.util.List;
@@ -22,16 +23,16 @@ public class SearchFragment extends Fragment {
 
   private MainViewModel viewModel;
   private SearchView stockSearch;
-  private StockRecyclerAdapter adapter;
+  private StockRollersDatabase database;
 
   @Nullable
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+    database = StockRollersDatabase.getInstance();
+    viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
     View view = inflater.inflate(R.layout.fragment_search, container, false);
     setUpSearch(view);
-    adapter = StockRecyclerAdapter.getInstance();
     return view;
   }
 
@@ -41,6 +42,7 @@ public class SearchFragment extends Fragment {
       @Override
       public boolean onQueryTextSubmit(String s) {
         viewModel.getStock(s);
+        stockSearch.clearFocus();
         return false;
       }
 
@@ -54,12 +56,5 @@ public class SearchFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-
-    viewModel.getStocks().observe(this, new Observer<List<Stock>>() {
-      @Override
-      public void onChanged(List<Stock> stocks) {
-        adapter.updateStocks(stocks);
-      }
-    });
   }
 }

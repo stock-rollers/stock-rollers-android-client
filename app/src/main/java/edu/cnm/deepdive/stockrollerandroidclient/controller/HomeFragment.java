@@ -12,15 +12,20 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
+import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class HomeFragment extends Fragment {
 
   private MainViewModel viewModel;
   private RecyclerView recyclerView;
+  private StockRollersDatabase database = StockRollersDatabase.getInstance();
+  private final Lock lock = new ReentrantLock();
   private ArrayList<Stock> stocks = new ArrayList<>();
   private Stock stockEntity;
   private Stock stock;
@@ -30,7 +35,7 @@ public class HomeFragment extends Fragment {
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+    viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
     View view = inflater.inflate(R.layout.fragment_home, container, false);
     recyclerView = view.findViewById(R.id.stock_list);
     viewModel.getStocks().observe(this, (stocks) -> {

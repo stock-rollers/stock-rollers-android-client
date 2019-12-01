@@ -79,17 +79,15 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
 
   public void getStock(String ticker) {
     String token = getAuthorizationHeader();
-    pending.add(
-      service.getStock(token, ticker)
-          .subscribeOn(Schedulers.from(executor))
-          .subscribe((stock) -> {
-            stockMutableLiveData.postValue(stock);
-            List<Stock> current = stocks.getValue();
-            current.add(stock);
-            stocks.postValue(current);
-            database.getStockDao().insert(stock);
-        })
-    );
+      pending.add(
+          service.getStock(token, ticker)
+              .subscribeOn(Schedulers.from(executor))
+              .subscribe((stock) -> {
+                if (!database.getStockDao().getByName(ticker).isPresent()) {
+                  database.getStockDao().insert(stock);
+                }
+              })
+      );
   }
 
 
@@ -100,7 +98,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   }
 
   public LiveData<List<Stock>> getStocks() {
-    return stocks;
+    return database.getStockDao().getAll();
   }
 
   public void refresh() {
