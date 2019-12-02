@@ -65,17 +65,20 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
     private final View view;
     public TextView name;
     private TextView price;
+    public TextView companyName;
 
     public StockHolder(@NonNull View itemView) {
       super(itemView);
       name = itemView.findViewById(R.id.stock_name);
       price = itemView.findViewById(R.id.stock_price);
+      companyName = itemView.findViewById(R.id.company_name);
       view = itemView;
     }
 
     private void bind(int position, Stock stock) {
-      name.setText(stock.getNasdaqName());
-//      price.setText(stock.getPrice().toString());
+      name.setText(stock.getNasdaqName() + ",");
+      price.setText(stock.getPrice().toString() + " $");
+      companyName.setText(stock.getCompany());
     }
   }
 

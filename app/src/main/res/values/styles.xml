@@ -8,4 +8,8 @@
     <item name="colorAccent">@color/colorAccent</item>
   </style>
 
+  <style name="money_symbol">
+    <item name="android:textColor">#FF00A000</item>
+  </style>
+
 </resources>
