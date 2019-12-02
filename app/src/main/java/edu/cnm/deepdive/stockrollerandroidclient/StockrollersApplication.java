@@ -13,6 +13,8 @@ public class StockrollersApplication extends Application {
     GoogleSignInService.setApplicationContext(this);
     final StockRollersDatabase database = StockRollersDatabase.getInstance();
     new Thread(() -> {
+      database.getHistoryDao().delete();
+      database.getStockDao().delete();
       //delete nothing in the database to initialize it
     }).start();
   }

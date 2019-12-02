@@ -69,8 +69,8 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     return stockMutableLiveData;
   }
 
-  public LiveData<History> getHistory() {
-    return historyMutableLiveData;
+  public LiveData<List<History>> getHistory() {
+    return database.getHistoryDao().getAll();
   }
 
   public void setAccount(GoogleSignInAccount account) {
@@ -85,9 +85,25 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
               .subscribe((stock) -> {
                 if (!database.getStockDao().getByName(ticker).isPresent()) {
                   database.getStockDao().insert(stock);
+                  getHistory(ticker);
                 }
               })
       );
+  }
+
+  public void getHistory(String ticker) {
+    String token = getAuthorizationHeader();
+    pending.add(
+        service.getHistoryForStock(token, ticker)
+        .subscribeOn(Schedulers.from(executor))
+        .subscribe((response) -> {
+          List<History> histories = response.getHistories();
+          for (History history :
+              histories) {
+            database.getHistoryDao().insert(history);
+          }
+        })
+    );
   }
 
 

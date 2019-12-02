@@ -32,4 +32,7 @@ public interface StockDao {
 
   @Delete
   int delete(Stock stock);
+
+  @Delete
+  int delete(Stock... stocks);
 }

@@ -1,26 +1,39 @@
 package edu.cnm.deepdive.stockrollerandroidclient.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
+import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
+import edu.cnm.deepdive.stockrollerandroidclient.view.RecyclerItemClickListener;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter;
+import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.OnClickListener;
+import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.OnContextListener;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment  implements OnContextListener, OnClickListener {
 
   private MainViewModel viewModel;
   private RecyclerView recyclerView;
@@ -29,7 +42,7 @@ public class HomeFragment extends Fragment {
   private ArrayList<Stock> stocks = new ArrayList<>();
   private Stock stockEntity;
   private Stock stock;
-  private StockRecyclerAdapter adapter = StockRecyclerAdapter.getInstance();
+  private StockRecyclerAdapter adapter;
 
   @Nullable
   @Override
@@ -39,15 +52,16 @@ public class HomeFragment extends Fragment {
     View view = inflater.inflate(R.layout.fragment_home, container, false);
     recyclerView = view.findViewById(R.id.stock_list);
     viewModel.getStocks().observe(this, (stocks) -> {
-      StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks);
+      StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks, this, this);
       recyclerView.setAdapter(newAdapter);
       recyclerView.getAdapter().notifyDataSetChanged();
     });
 
-//    FloatingActionButton fab = view.findViewById(R.id.fab);
-//    fab.setOnClickListener((v) -> {
-//
-//    });
+    FloatingActionButton fab = view.findViewById(R.id.fab);
+    fab.setOnClickListener((v) -> {
+      viewModel.getHistory();
+
+    });
 //    observeViewModel(viewModel);
     return view;
   }
@@ -57,6 +71,8 @@ public class HomeFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
   }
 
+
+
   private void observeViewModel(MainViewModel viewModel) {
 //    viewModel.getStocks().observe(this, new Observer<List<Stock>>() {
 //      @Override
@@ -64,5 +80,17 @@ public class HomeFragment extends Fragment {
 //        adapter.updateStocks(stocks);
 //      }
 //    });
+  }
+
+  @Override
+  public void onClick(View view, int position, Stock stock) {
+    Toast.makeText(getActivity(), "Click", Toast.LENGTH_LONG).show();
+  }
+
+  @Override
+  public void onLongPress(Menu menu, int position, Stock stock) {
+    MenuInflater inflater = getActivity().getMenuInflater();
+    inflater.inflate(R.menu.stock_context, menu);
+    Toast.makeText(getActivity(), "Long Press", Toast.LENGTH_LONG).show();
   }
 }

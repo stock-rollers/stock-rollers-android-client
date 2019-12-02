@@ -1,19 +1,18 @@
 package edu.cnm.deepdive.stockrollerandroidclient.view;
 
-import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
-import edu.cnm.deepdive.stockrollerandroidclient.service.StockrollersService;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.StockHolder;
-import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,13 +21,13 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
 
   private List<Stock> stocks;
   private Stock stockEntity;
+  private OnClickListener clickListener;
+  private OnContextListener contextListener;
 
-  public StockRecyclerAdapter(List<Stock> stocks) {
+  public StockRecyclerAdapter(List<Stock> stocks,  OnClickListener clickListener, OnContextListener contextListener) {
+    this.clickListener = clickListener;
+    this.contextListener = contextListener;
     this.stocks = new LinkedList<>(stocks);
-  }
-
-  public static StockRecyclerAdapter getInstance() {
-    return InstanceHolder.INSTANCE;
   }
 
   public void addStockToView(Stock stock) {
@@ -36,10 +35,11 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
     notifyItemChanged(stocks.size());
   }
 
+
+
   public void updateStocks(List<Stock> stocks) {
     this.stocks.clear();
-    this.stocks.addAll(stocks);
-    notifyDataSetChanged();
+    this.stocks = stocks;
   }
 
   @NonNull
@@ -60,6 +60,21 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
     return stocks.size();
   }
 
+  @FunctionalInterface
+  public interface OnClickListener {
+
+    void onClick(View view, int position, Stock stock);
+
+  }
+
+  @FunctionalInterface
+  public interface OnContextListener {
+
+    void onLongPress(Menu menu, int position, Stock stock);
+
+  }
+
+
   public class StockHolder extends RecyclerView.ViewHolder {
 
     private final View view;
@@ -79,11 +94,13 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
       name.setText(stock.getNasdaqName() + ",");
       price.setText(stock.getPrice().toString() + " $");
       companyName.setText(stock.getCompany());
+      if (clickListener != null) {
+        view.setOnClickListener((v) -> clickListener.onClick(v, position, stock));
+      }
+      if (contextListener != null) {
+        view.setOnCreateContextMenuListener((menu, v, menuInfo) ->
+            contextListener.onLongPress(menu, position, stock));
+      }
     }
-  }
-
-  private static class InstanceHolder {
-
-    private static final StockRecyclerAdapter INSTANCE = new StockRecyclerAdapter(Collections.emptyList());
   }
 }

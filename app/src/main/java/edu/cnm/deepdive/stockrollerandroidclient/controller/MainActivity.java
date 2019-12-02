@@ -3,16 +3,18 @@ package edu.cnm.deepdive.stockrollerandroidclient.controller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnContextClickListener;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.TextView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.service.GoogleSignInService;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
@@ -66,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
     transaction.commit();
   }
 
-
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
     getMenuInflater().inflate(R.menu.options, menu);
@@ -84,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     addFragment(homeFragment, true);
   }
-
 
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
