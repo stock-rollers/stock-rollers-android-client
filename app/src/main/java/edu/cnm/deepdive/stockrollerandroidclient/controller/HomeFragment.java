@@ -6,12 +6,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,6 +43,8 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
   private Stock stockEntity;
   private Stock stock;
   private StockRecyclerAdapter adapter;
+  private FragmentManager fragmentManager;
+  private StockFragment stockFragment;
 
   @Nullable
   @Override
@@ -52,7 +60,7 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
       recyclerView.getAdapter().notifyDataSetChanged();
     });
 
-    FloatingActionButton fab = view.findViewById(R.id.fab);
+    ImageView fab = view.findViewById(R.id.fab);
     fab.setOnClickListener((v) -> {
       viewModel.getHistory();
 
@@ -79,7 +87,12 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
 
   @Override
   public void onClick(View view, int position, Stock stock) {
-    // Should open Stock fragment;
+    viewModel.setStock(stock);
+    FragmentManager manager = getFragmentManager();
+    FragmentTransaction transaction = manager.beginTransaction();
+    transaction.replace(R.id.fragment_container, stockFragment);
+    transaction.commit();
+
   }
 
   @Override

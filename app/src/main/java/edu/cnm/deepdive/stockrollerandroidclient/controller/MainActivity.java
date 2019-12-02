@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
   private ProfileFragment profileFragment = new ProfileFragment();
   private GoogleSignInService signInService;
   private MainViewModel viewModel;
+//  private StockFragment stockFragment = new StockFragment();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    addFragment(homeFragment, true);
+    addFragment(homeFragment, false);
+//  addFragment(stockFragment, false);
   }
 
   @Override
@@ -114,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         case R.id.navigation_notifications:
           replaceFragment(profileFragment, false);
           return true;
+
       }
       return false;
     }

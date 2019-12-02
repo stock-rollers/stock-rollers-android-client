@@ -36,21 +36,10 @@
     app:layout_constraintRight_toLeftOf="@id/stock_price"
     app:layout_constraintLeft_toRightOf="@id/company_name"
     app:layout_constraintTop_toTopOf="parent"
-app:layout_constraintHorizontal_bias=".95"
+    app:layout_constraintHorizontal_bias=".95"
     android:textSize="22dp"
     android:textStyle="italic"
     android:textColor="@color/company"/>
-
-  <ImageView
-    android:id="@+id/graph"
-    android:layout_width="15dp"
-    android:layout_height="15dp"
-    android:src="@drawable/graph"
-    app:layout_constraintLeft_toRightOf="@+id/company_name"
-    app:layout_constraintTop_toBottomOf="parent"
-
-    />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

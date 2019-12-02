@@ -21,15 +21,18 @@
     tools:context=".controller.MainFragment"
     android:layout_marginBottom="10dp"/>
 
-  <com.google.android.material.floatingactionbutton.FloatingActionButton
+  <ImageView
     android:id="@+id/fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
     android:layout_margin="16dp"
     android:src="@drawable/dice"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintRight_toRightOf="parent"
+
+    android:tooltipText="roll"
     />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
