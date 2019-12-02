@@ -1,35 +1,28 @@
 package edu.cnm.deepdive.stockrollerandroidclient.controller;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
-import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
-import edu.cnm.deepdive.stockrollerandroidclient.view.RecyclerItemClickListener;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.OnClickListener;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.OnContextListener;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -37,6 +30,7 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
 
   private MainViewModel viewModel;
   private RecyclerView recyclerView;
+  private Fragment graphFragment;
   private StockRollersDatabase database = StockRollersDatabase.getInstance();
   private final Lock lock = new ReentrantLock();
   private ArrayList<Stock> stocks = new ArrayList<>();
@@ -51,6 +45,7 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
     viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
     View view = inflater.inflate(R.layout.fragment_home, container, false);
     recyclerView = view.findViewById(R.id.stock_list);
+    graphFragment = new HistoryGraphFragment();
     viewModel.getStocks().observe(this, (stocks) -> {
       StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks, this, this);
       recyclerView.setAdapter(newAdapter);
@@ -84,13 +79,26 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
 
   @Override
   public void onClick(View view, int position, Stock stock) {
-    Toast.makeText(getActivity(), "Click", Toast.LENGTH_LONG).show();
+    // Should open Stock fragment;
   }
 
   @Override
   public void onLongPress(Menu menu, int position, Stock stock) {
     MenuInflater inflater = getActivity().getMenuInflater();
     inflater.inflate(R.menu.stock_context, menu);
+    menu.findItem(R.id.history).setOnMenuItemClickListener((item) -> {
+      viewModel.setStock(stock);
+      FragmentManager manager = getFragmentManager();
+      FragmentTransaction transaction = manager.beginTransaction();
+      transaction.replace(R.id.fragment_container, graphFragment);
+      transaction.commit();
+      return true;
+    });
+    menu.findItem(R.id.update).setOnMenuItemClickListener((item) -> {
+      Toast.makeText(getActivity(), "Click", Toast.LENGTH_LONG);
+      return true;
+    });
+
     Toast.makeText(getActivity(), "Long Press", Toast.LENGTH_LONG).show();
   }
 }

@@ -43,6 +43,9 @@ public class HistoryGraphFragment extends Fragment {
   private SimpleXYSeries series;
   private StockRollersDatabase database = StockRollersDatabase.getInstance();
   private MainViewModel viewModel;
+  private Long stockId;
+  private List<History> histories;
+  private List<LocalDate> dates;
 
   @Nullable
   @Override
@@ -52,64 +55,65 @@ public class HistoryGraphFragment extends Fragment {
     viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
     plot1 = (XYPlot) view.findViewById(R.id.plot);
 
-    long id = 1;
-    viewModel.getStock();
-    List<History> histories = database.getHistoryDao().getHistoryByStock(id);
-    List<LocalDate> dates = new LinkedList<>();
-    for (History history :
-        histories) {
-      dates.add(history.getDate());
-    }
-    // these will be our domain index labels:
-    Date[] years = new Date[dates.size()];
-    for (int i = 0; i < years.length; i++) {
-      years[i] = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
-    }
+    viewModel.getStock().observe(this, (stock) -> stockId = stock.getId());
 
-    addSeries(savedInstanceState);
+    viewModel.getHistory().observe(this, (histories) -> {
+      this.histories = histories;
+      dates = new LinkedList<>();
+      for (History history : histories) {
+        dates.add(history.getDate());
+      }
+      // these will be our domain index labels:
+      Date[] years = new Date[dates.size()];
+      for (int i = 0; i < years.length; i++) {
+        years[i] = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
+      }
+      addSeries(savedInstanceState);
 
-    plot1.setRangeBoundaries(0, 10, BoundaryMode.FIXED);
+      plot1.setRangeBoundaries(0, 10, BoundaryMode.FIXED);
 
-    plot1.getGraph().getGridBackgroundPaint().setColor(Color.WHITE);
-    plot1.getGraph().getDomainGridLinePaint().setColor(Color.BLACK);
-    plot1.getGraph().getDomainGridLinePaint().
-        setPathEffect(new DashPathEffect(new float[]{1, 1}, 1));
-    plot1.getGraph().getRangeGridLinePaint().setColor(Color.BLACK);
-    plot1.getGraph().getRangeGridLinePaint().
-        setPathEffect(new DashPathEffect(new float[]{1, 1}, 1));
-    plot1.getGraph().getDomainOriginLinePaint().setColor(Color.BLACK);
-    plot1.getGraph().getRangeOriginLinePaint().setColor(Color.BLACK);
+      plot1.getGraph().getGridBackgroundPaint().setColor(Color.WHITE);
+      plot1.getGraph().getDomainGridLinePaint().setColor(Color.BLACK);
+      plot1.getGraph().getDomainGridLinePaint().
+          setPathEffect(new DashPathEffect(new float[]{1, 1}, 1));
+      plot1.getGraph().getRangeGridLinePaint().setColor(Color.BLACK);
+      plot1.getGraph().getRangeGridLinePaint().
+          setPathEffect(new DashPathEffect(new float[]{1, 1}, 1));
+      plot1.getGraph().getDomainOriginLinePaint().setColor(Color.BLACK);
+      plot1.getGraph().getRangeOriginLinePaint().setColor(Color.BLACK);
 
-    plot1.getGraph().setPaddingRight(2);
+      plot1.getGraph().setPaddingRight(2);
 
-    // draw a domain tick for each year:
-    plot1.setDomainStep(StepMode.SUBDIVIDE, years.length);
+      // draw a domain tick for each year:
+      plot1.setDomainStep(StepMode.SUBDIVIDE, years.length);
 
-    // customize our domain/range labels
-    plot1.setDomainLabel("Year");
-    plot1.setRangeLabel("# of Sightings");
+      // customize our domain/range labels
+      plot1.setDomainLabel("Year");
+      plot1.setRangeLabel("# of Sightings");
 
-    // get rid of decimal points in our range labels:
-    plot1.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).
-        setFormat(new DecimalFormat("0.0"));
+      // get rid of decimal points in our range labels:
+      plot1.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).
+          setFormat(new DecimalFormat("0.0"));
 
-    plot1.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).
-        setFormat(new Format() {
-          private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
-          @Override
-          public StringBuffer format(Object obj,
-              @NonNull StringBuffer toAppendTo,
-              @NonNull FieldPosition pos) {
-            int yearIndex = (int) Math.round(((Number) obj).doubleValue());
-            return dateFormat.format(years[yearIndex], toAppendTo, pos);
-          }
+      plot1.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).
+          setFormat(new Format() {
+            private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
 
-          @Override
-          public Object parseObject(String source, @NonNull ParsePosition pos) {
-            return null;
+            @Override
+            public StringBuffer format(Object obj,
+                @NonNull StringBuffer toAppendTo,
+                @NonNull FieldPosition pos) {
+              int yearIndex = (int) Math.round(((Number) obj).doubleValue());
+              return dateFormat.format(years[yearIndex], toAppendTo, pos);
+            }
 
-          }
-        });
+            @Override
+            public Object parseObject(String source, @NonNull ParsePosition pos) {
+              return null;
+
+            }
+          });
+    });
 
     return super.onCreateView(inflater, container, savedInstanceState);
   }
@@ -117,22 +121,19 @@ public class HistoryGraphFragment extends Fragment {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    new Thread(() -> {
-
-    }).start();
   }
 
   /**
-   * Instantiates our XYSeries, checking the current savedInstanceState for existing series data
-   * to avoid having to regenerate on each resume.  If your series data is small and easy to
-   * regenerate (as it is here) then you can skip saving/restoring your series data to
-   * savedInstanceState.
+   * Instantiates our XYSeries, checking the current savedInstanceState for existing series data to
+   * avoid having to regenerate on each resume.  If your series data is small and easy to regenerate
+   * (as it is here) then you can skip saving/restoring your series data to savedInstanceState.
+   *
    * @param savedInstanceState Current saved instance state, if any; may be null.
    */
-  private void addSeries(Bundle savedInstanceState) {
+  private void addSeries(@Nullable Bundle savedInstanceState) {
     Number[] yVals;
 
-    if(savedInstanceState != null) {
+    if (savedInstanceState != null) {
       yVals = (Number[]) savedInstanceState.getSerializable(SERIES_TITLE);
     } else {
       yVals = new Number[]{5, 8, 6, 9, 3, 8, 5, 4, 7, 4};
@@ -141,7 +142,7 @@ public class HistoryGraphFragment extends Fragment {
     // create our series from our array of nums:
     series = new SimpleXYSeries(Arrays.asList(yVals),
         SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, SERIES_TITLE);
-
+    PixelUtils.init(getActivity());
     LineAndPointFormatter formatter =
         new LineAndPointFormatter(Color.rgb(0, 0, 0), Color.RED, Color.RED, null);
     formatter.getVertexPaint().setStrokeWidth(PixelUtils.dpToPix(10));

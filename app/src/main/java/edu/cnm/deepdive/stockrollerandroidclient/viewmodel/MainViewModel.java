@@ -28,7 +28,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   private CompositeDisposable pending = new CompositeDisposable();
   private StockrollersService service;
   private GoogleSignInService googleSignInService;
-  private MutableLiveData<Stock> stockMutableLiveData;
+  private MutableLiveData<Stock> stock;
   private MutableLiveData<History> historyMutableLiveData;
   private MutableLiveData<String> stockSearch;
   private MutableLiveData<List<Stock>> stocks;
@@ -41,20 +41,12 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     executor = Executors.newSingleThreadExecutor();
     database = StockRollersDatabase.getInstance();
     service = StockrollersService.getInstance();
-    stockMutableLiveData = new MutableLiveData<>();
+    stock = new MutableLiveData<>();
     historyMutableLiveData = new MutableLiveData<>();
     stockSearch = new MutableLiveData<>();
     stocks = new MutableLiveData<>();
     account = new MutableLiveData<>();
     googleSignInService = GoogleSignInService.getInstance();
-    refresh();
-//    searchResult = Transformations.switchMap(stockSearch, (data) -> {
-//      if (data == null) {
-//        return new MutableLiveData<List<Stock>>(Collections.EMPTY_LIST);
-//      } else {
-//        return database.getStockDao().search(data);
-//      }
-//    });
   }
 
   public LiveData<String> getStockSearch() {
@@ -66,11 +58,19 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   }
 
   public LiveData<Stock> getStock() {
-    return stockMutableLiveData;
+    return stock;
+  }
+
+  public void setStock(Stock stock) {
+    this.stock.postValue(stock);
+  }
+
+  public LiveData<List<Stock>> getStocks() {
+    return database.getStockDao().getAll();
   }
 
   public LiveData<List<History>> getHistory() {
-    return database.getHistoryDao().getAll();
+    return database.getHistoryDao().getAllByStockId(stock.getValue().getId());
   }
 
   public void setAccount(GoogleSignInAccount account) {
@@ -112,32 +112,4 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     Log.d("OAuth2.0 token", token); // FIXME Remove before shipping.
     return token;
   }
-
-  public LiveData<List<Stock>> getStocks() {
-    return database.getStockDao().getAll();
-  }
-
-  public void refresh() {
-    Stock stock = new Stock("name", "hundred", "551");
-    Stock stock1 = new Stock("name1", "hundred1", "550");
-    Stock stock2 = new Stock("name2", "hundred2", "559");
-    Stock stock3 = new Stock("name3", "hundred3", "558");
-    Stock stock4 = new Stock("name4", "hundred4", "557");
-    Stock stock5 = new Stock("name5", "hundred5", "556");
-    Stock stock6 = new Stock("name6", "hundred6", "555");
-
-    ArrayList<Stock> stockArrayList = new ArrayList<>();
-
-    stockArrayList.add(stock);
-    stockArrayList.add(stock1);
-    stockArrayList.add(stock2);
-    stockArrayList.add(stock3);
-    stockArrayList.add(stock4);
-    stockArrayList.add(stock5);
-    stockArrayList.add(stock6);
-
-    stocks.setValue(stockArrayList);
-
-  }
-
 }

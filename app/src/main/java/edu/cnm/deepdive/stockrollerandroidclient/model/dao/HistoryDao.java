@@ -16,8 +16,8 @@ public interface HistoryDao {
   @Insert
   void insert(History history);
 
-  @Query("SELECT * FROM history")
-  LiveData<List<History>> getAll();
+  @Query("SELECT * FROM history WHERE stock_id = :stockId")
+  LiveData<List<History>> getAllByStockId(Long stockId);
 
   @Query("SELECT * FROM history WHERE date = :date AND stock_id = :stockId")
   Optional<History> getHistoryByDateAndStock(LocalDate date, Long stockId);
