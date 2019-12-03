@@ -54,6 +54,7 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
     View view = inflater.inflate(R.layout.fragment_home, container, false);
     recyclerView = view.findViewById(R.id.stock_list);
     graphFragment = new HistoryGraphFragment();
+    stockFragment = new StockFragment();
     viewModel.getStocks().observe(this, (stocks) -> {
       StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks, this, this);
       recyclerView.setAdapter(newAdapter);
@@ -88,10 +89,12 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
   @Override
   public void onClick(View view, int position, Stock stock) {
     viewModel.setStock(stock);
+    stockFragment = new StockFragment();
     FragmentManager manager = getFragmentManager();
     FragmentTransaction transaction = manager.beginTransaction();
     transaction.replace(R.id.fragment_container, stockFragment);
     transaction.commit();
+
 
   }
 

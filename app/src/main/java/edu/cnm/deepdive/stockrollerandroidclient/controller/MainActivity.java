@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
   private ProfileFragment profileFragment = new ProfileFragment();
   private GoogleSignInService signInService;
   private MainViewModel viewModel;
-//  private StockFragment stockFragment = new StockFragment();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     addFragment(homeFragment, false);
-//  addFragment(stockFragment, false);
   }
 
   @Override

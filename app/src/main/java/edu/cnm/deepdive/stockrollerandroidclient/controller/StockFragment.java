@@ -19,9 +19,8 @@ import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 public class StockFragment extends Fragment {
 
   private MainViewModel viewModel;
-  private LinearLayout linearLayout;
   private StockRollersDatabase database;
-  private TextView itemView;
+
 
   private View view;
   private TextView name;
@@ -36,21 +35,26 @@ public class StockFragment extends Fragment {
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     database = StockRollersDatabase.getInstance();
+    view = inflater.inflate(R.layout.individual_stock, container, false);
     viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-    View view = inflater.inflate(R.layout.individual_stock, container, false);
+    name = view.findViewById(R.id.stock_name);
+    price = view.findViewById(R.id.stock_price);
+    companyName = view.findViewById(R.id.company_name);
+    yearHigh = view.findViewById(R.id.year_high);
+    yearLow = view.findViewById(R.id.year_low);
+
+    viewModel.getStock().observe(this, (stock) -> {
+
+    name.setText(" (" + stock.getNasdaqName() + ")");
+    price.setText("Price: $ " + stock.getPrice().toString());
+    companyName.setText(stock.getCompany());
+    yearHigh.setText("Year High: " + stock.getFiftyTwoWkHigh().toString());
+    yearLow.setText("Year Low: " + stock.getFiftyTwoWkLow().toString());
+    });
 
     return view;
   }
 
-  private void Stockholder() {
-    name = itemView.findViewById(R.id.stock_name);
-    price = itemView.findViewById(R.id.stock_price);
-    companyName = itemView.findViewById(R.id.company_name);
-    yearHigh = itemView.findViewById(R.id.year_high);
-    yearLow = itemView.findViewById(R.id.year_low);
-    view = itemView;
-
-  }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
