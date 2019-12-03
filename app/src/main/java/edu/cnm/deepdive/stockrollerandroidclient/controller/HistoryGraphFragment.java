@@ -11,13 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import com.androidplot.Plot;
+import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.SimpleXYSeries.ArrayFormat;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
+import com.androidplot.xy.XYSeriesFormatter;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.History;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
@@ -68,8 +73,26 @@ public class HistoryGraphFragment extends Fragment {
       for (int i = 0; i < years.length; i++) {
         years[i] = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
       }
-      addSeries(savedInstanceState);
+      Number[] price = new Number[dates.size()];
+      for (int i = 0; i < price.length; i++) {
+        price[i] = histories.get(i).getClose();
+      }
+      XYSeries series1 = new SimpleXYSeries(Arrays.asList(price), ArrayFormat.Y_VALS_ONLY, "Close Price");
+          //price, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
+      //XYSeries series2 = new SimpleXYSeries(
+          //Arrays.asList(series2Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series2");
 
+      plot1.addSeries(series1, new XYSeriesFormatter() {
+        @Override
+        public Class<? extends SeriesRenderer> getRendererClass() {
+          return null;
+        }
+
+        @Override
+        protected SeriesRenderer doGetRendererInstance(Plot plot) {
+          return null;
+        }
+      });
       plot1.setRangeBoundaries(0, 10, BoundaryMode.FIXED);
 
       plot1.getGraph().getGridBackgroundPaint().setColor(Color.WHITE);
@@ -121,39 +144,6 @@ public class HistoryGraphFragment extends Fragment {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-  }
-
-  /**
-   * Instantiates our XYSeries, checking the current savedInstanceState for existing series data to
-   * avoid having to regenerate on each resume.  If your series data is small and easy to regenerate
-   * (as it is here) then you can skip saving/restoring your series data to savedInstanceState.
-   *
-   * @param savedInstanceState Current saved instance state, if any; may be null.
-   */
-  private void addSeries(@Nullable Bundle savedInstanceState) {
-    Number[] yVals;
-
-    if (savedInstanceState != null) {
-      yVals = (Number[]) savedInstanceState.getSerializable(SERIES_TITLE);
-    } else {
-      yVals = new Number[]{5, 8, 6, 9, 3, 8, 5, 4, 7, 4};
-    }
-
-    // create our series from our array of nums:
-    series = new SimpleXYSeries(Arrays.asList(yVals),
-        SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, SERIES_TITLE);
-    PixelUtils.init(getActivity());
-    LineAndPointFormatter formatter =
-        new LineAndPointFormatter(Color.rgb(0, 0, 0), Color.RED, Color.RED, null);
-    formatter.getVertexPaint().setStrokeWidth(PixelUtils.dpToPix(10));
-    formatter.getLinePaint().setStrokeWidth(PixelUtils.dpToPix(5));
-
-    Paint lineFill = new Paint();
-    lineFill.setAlpha(200);
-
-    formatter.setFillPaint(lineFill);
-
-    plot1.addSeries(series, formatter);
   }
 
   @Override

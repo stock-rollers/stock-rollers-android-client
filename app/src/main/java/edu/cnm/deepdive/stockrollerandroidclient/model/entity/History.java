@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+import com.facebook.stetho.json.annotation.JsonValue;
 import java.time.LocalDate;
 
 @Entity(

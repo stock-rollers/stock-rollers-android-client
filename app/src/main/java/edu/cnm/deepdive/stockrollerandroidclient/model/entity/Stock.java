@@ -14,19 +14,6 @@ import java.util.LinkedList;
 )
 public class Stock {
 
-  //
-  public String stockName;
-  public String stockPrice;
-  public String stockId;
-
-  public Stock(String stockName, String stockPrice, String stockId) {
-    this.stockName = stockName;
-    this.stockPrice = stockPrice;
-    this.stockId = stockId;
-    nasdaqName = stockName;
-  }
-  //
-
   @PrimaryKey(autoGenerate = true)
   @ColumnInfo(name = "stock_id")
   private Long id;

@@ -15,7 +15,9 @@ import edu.cnm.deepdive.stockrollerandroidclient.service.GoogleSignInService;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockrollersService;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.internal.schedulers.SchedulerWhen;
 import io.reactivex.schedulers.Schedulers;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -96,10 +98,17 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     pending.add(
         service.getHistoryForStock(token, ticker)
         .subscribeOn(Schedulers.from(executor))
-        .subscribe((response) -> {
-          List<History> histories = response.getHistories();
-          for (History history :
-              histories) {
+        .subscribe((histories) -> {
+          long id = database.getStockDao().getByName(ticker).get().getId();
+          for (int i = 0; i < histories.size(); i++) {
+            History history = new History();
+            history.setStockId(id);
+            history.setDate(LocalDate.parse(histories.get(i).getDate()));
+            history.setClose(histories.get(i).getClose());
+            history.setOpen(histories.get(i).getOpen());
+            history.setHigh(histories.get(i).getHigh());
+            history.setLow(histories.get(i).getLow());
+            history.setVolume(histories.get(i).getVolume());
             database.getHistoryDao().insert(history);
           }
         })

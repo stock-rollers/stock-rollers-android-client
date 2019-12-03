@@ -4,8 +4,10 @@ import edu.cnm.deepdive.stockrollerandroidclient.BuildConfig;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.History;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.model.pojo.HistoryResponse;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import okhttp3.OkHttpClient;
@@ -28,7 +30,7 @@ public interface StockrollersService {
   Single<Stock> getStock(@Header("Authorization") String token, @Path("symbol") String symbol);
 
   @GET("history/{symbol}")
-  Single<HistoryResponse> getHistoryForStock(@Header("Authorization") String token, @Path("symbol") String symbol);
+  Flowable<ArrayList<HistoryResponse>> getHistoryForStock(@Header("Authorization") String token, @Path("symbol") String symbol);
 
 
 
