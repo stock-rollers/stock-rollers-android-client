@@ -7,12 +7,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
-import edu.cnm.deepdive.stockrollerandroidclient.view.FollowersRecyclerAdapter.ProfileHolder;
+import edu.cnm.deepdive.stockrollerandroidclient.view.FollowersRecyclerAdapter.FollowersHolder;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class FollowersRecyclerAdapter extends RecyclerView.Adapter<ProfileHolder> {
+public class FollowersRecyclerAdapter extends RecyclerView.Adapter<FollowersHolder> {
 
   private List<String> names;
   private List<String> followers;
@@ -31,28 +31,28 @@ public class FollowersRecyclerAdapter extends RecyclerView.Adapter<ProfileHolder
       names.add("Warren Buffet");
       this.followers = new ArrayList<String>();
       followers.add("39");
-      followers.add("98");
-      followers.add("268");
-      followers.add("1,022");
-      followers.add("1,206,614");
-      followers.add("-23");
       followers.add("3442");
+      followers.add("1,206,614");
+      followers.add("98");
+      followers.add("1,022");
+      followers.add("-23");
       followers.add("869,427");
       followers.add("1,337");
       followers.add("1,477,608");
+      followers.add("268");
     }
 
   @NonNull
   @Override
-  public ProfileHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public FollowersHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     View view = LayoutInflater.from(parent.getContext())
         .inflate(R.layout.list_profile, parent, false);
-    return new ProfileHolder(view);
+    return new FollowersHolder(view);
   }
 
 
   @Override
-  public void onBindViewHolder(@NonNull ProfileHolder holder, int position) {
+  public void onBindViewHolder(@NonNull FollowersHolder holder, int position) {
    String name = names.get(position);
     holder.bind(position, name, followers.get(position));
   }
@@ -62,13 +62,13 @@ public class FollowersRecyclerAdapter extends RecyclerView.Adapter<ProfileHolder
     return names.size();
   }
 
-  public class ProfileHolder extends RecyclerView.ViewHolder {
+  public class FollowersHolder extends RecyclerView.ViewHolder {
 
     private final View view;
     public TextView name;
     private TextView number;
 
-    public ProfileHolder(@NonNull View itemView) {
+    public FollowersHolder(@NonNull View itemView) {
       super(itemView);
       name = itemView.findViewById(R.id.name);
       number = itemView.findViewById(R.id.number_of_followers);
@@ -77,7 +77,7 @@ public class FollowersRecyclerAdapter extends RecyclerView.Adapter<ProfileHolder
 
     private void bind(int position, String name1, String follower) {
       name.setText(name1);
-      number.setText("followers " + follower);
+      number.setText(follower);
 //      if (clickListener != null) {
 //        view.setOnClickListener((v) -> clickListener.onClick(v, position, stock));
 //      }
