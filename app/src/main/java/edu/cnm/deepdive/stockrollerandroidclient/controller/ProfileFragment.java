@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,7 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
-import edu.cnm.deepdive.stockrollerandroidclient.view.ProfileRecyclerAdapter;
+import edu.cnm.deepdive.stockrollerandroidclient.view.FollowersRecyclerAdapter;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 
 public class ProfileFragment extends Fragment {
@@ -31,7 +29,7 @@ public class ProfileFragment extends Fragment {
     View view = inflater.inflate(R.layout.fragment_profile, container, false);
     recyclerView = view.findViewById(R.id.following);
 
-    ProfileRecyclerAdapter adapter = new ProfileRecyclerAdapter();
+    FollowersRecyclerAdapter adapter = new FollowersRecyclerAdapter();
 
     recyclerView.setAdapter(adapter);
 

@@ -7,18 +7,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
-import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
-import edu.cnm.deepdive.stockrollerandroidclient.view.ProfileRecyclerAdapter.ProfileHolder;
+import edu.cnm.deepdive.stockrollerandroidclient.view.FollowersRecyclerAdapter.ProfileHolder;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ProfileRecyclerAdapter extends RecyclerView.Adapter<ProfileHolder> {
+public class FollowersRecyclerAdapter extends RecyclerView.Adapter<ProfileHolder> {
 
   private List<String> names;
   private List<String> followers;
 
-    public ProfileRecyclerAdapter() {
+    public FollowersRecyclerAdapter() {
     this.names = new ArrayList<String>();
       names.add("Evan Baxter");
       names.add("Michael Scott");
