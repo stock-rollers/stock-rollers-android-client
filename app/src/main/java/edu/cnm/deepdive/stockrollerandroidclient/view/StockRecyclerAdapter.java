@@ -91,11 +91,16 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
       price.setText(stock.getPrice().toString() + " $");
       companyName.setText(stock.getCompany());
       if (clickListener != null) {
-        view.setOnClickListener((v) -> clickListener.onClick(v, position, stock));
+        view.setOnClickListener((v) -> {
+          view.clearFocus();
+          clickListener.onClick(v, position, stock);
+        });
       }
       if (contextListener != null) {
-        view.setOnCreateContextMenuListener((menu, v, menuInfo) ->
-            contextListener.onLongPress(menu, position, stock));
+        view.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+          view.clearFocus();
+          contextListener.onLongPress(menu, position, stock);
+        });
       }
     }
   }

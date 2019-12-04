@@ -9,6 +9,8 @@ import android.widget.SearchView.OnQueryTextListener;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,8 +43,15 @@ public class SearchFragment extends Fragment {
     stockSearch.setOnQueryTextListener(new OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String s) {
-        viewModel.getStock(s);
         stockSearch.clearFocus();
+        viewModel.getStock(s);
+        Fragment fragment = new StockFragment();
+        FragmentManager manager = getFragmentManager();
+        viewModel.getStock().observe(SearchFragment.this, (stock) -> {
+          FragmentTransaction transaction = manager.beginTransaction();
+          transaction.replace(R.id.fragment_container, fragment);
+          transaction.commit();
+        });
         return false;
       }
 

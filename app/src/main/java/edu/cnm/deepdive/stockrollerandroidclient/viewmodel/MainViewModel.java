@@ -51,14 +51,6 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     googleSignInService = GoogleSignInService.getInstance();
   }
 
-  public LiveData<String> getStockSearch() {
-    return stockSearch;
-  }
-
-  public void setStockSearch(String name) {
-    stockSearch.setValue(name);
-  }
-
   public LiveData<Stock> getStock() {
     return stock;
   }
@@ -86,20 +78,22 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
               .subscribeOn(Schedulers.from(executor))
               .subscribe((stock) -> {
                 if (!database.getStockDao().getByName(ticker).isPresent()) {
-                  database.getStockDao().insert(stock);
-                  getHistory(ticker);
+                  setStock(stock);
+                  //getHistory(ticker);
+                } else {
+                  setStock(database.getStockDao().getByName(ticker).get());
                 }
               })
       );
   }
 
-  public void getHistory(String ticker) {
+  public void getHistory(Stock stock) {
     String token = getAuthorizationHeader();
     pending.add(
-        service.getHistoryForStock(token, ticker)
+        service.getHistoryForStock(token, stock.getNasdaqName())
         .subscribeOn(Schedulers.from(executor))
         .subscribe((histories) -> {
-          long id = database.getStockDao().getByName(ticker).get().getId();
+          long id = stock.getId();
           for (int i = 0; i < histories.size(); i++) {
             History history = new History();
             history.setStockId(id);

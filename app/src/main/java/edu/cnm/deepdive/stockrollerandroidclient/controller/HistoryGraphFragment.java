@@ -16,8 +16,13 @@ import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PanZoom;
+import com.androidplot.xy.PanZoom.Pan;
+import com.androidplot.xy.PanZoom.Zoom;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.SimpleXYSeries.ArrayFormat;
+import com.androidplot.xy.Step;
+import com.androidplot.xy.StepFormatter;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
@@ -56,44 +61,40 @@ public class HistoryGraphFragment extends Fragment {
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_home, container, false);
+    View view = inflater.inflate(R.layout.fragment_history, container, false);
     viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-    plot1 = (XYPlot) view.findViewById(R.id.plot);
+    plot1 = view.findViewById(R.id.plot);
 
     viewModel.getStock().observe(this, (stock) -> stockId = stock.getId());
 
     viewModel.getHistory().observe(this, (histories) -> {
       this.histories = histories;
-      dates = new LinkedList<>();
-      for (History history : histories) {
-        dates.add(history.getDate());
-      }
-      // these will be our domain index labels:
-      Date[] years = new Date[dates.size()];
-      for (int i = 0; i < years.length; i++) {
-        years[i] = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
-      }
-      Number[] price = new Number[dates.size()];
-      for (int i = 0; i < price.length; i++) {
+      Date[] years = new Date[histories.size()];
+      Number[] price = new Number[histories.size()];
+      for (int i = 0; i < histories.size(); i++) {
+        years[i] = Date.from(histories.get(i).getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
         price[i] = histories.get(i).getClose();
       }
+      int rightPointer = 0;
+      int leftPointer = years.length - 1;
+      Date dateTemp;
+      Number priceTemp;
+      while (leftPointer >= rightPointer) {
+        dateTemp = years[rightPointer];
+        priceTemp = price[rightPointer];
+        years[rightPointer] = years[leftPointer];
+        price[rightPointer] = price[leftPointer];
+        years[leftPointer] = dateTemp;
+        price[leftPointer] = priceTemp;
+        rightPointer++;
+        leftPointer--;
+      }
+
       XYSeries series1 = new SimpleXYSeries(Arrays.asList(price), ArrayFormat.Y_VALS_ONLY, "Close Price");
-          //price, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
-      //XYSeries series2 = new SimpleXYSeries(
-          //Arrays.asList(series2Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series2");
 
-      plot1.addSeries(series1, new XYSeriesFormatter() {
-        @Override
-        public Class<? extends SeriesRenderer> getRendererClass() {
-          return null;
-        }
+      plot1.addSeries(series1, new LineAndPointFormatter(Color.RED, Color.GREEN, Color.TRANSPARENT, null));
 
-        @Override
-        protected SeriesRenderer doGetRendererInstance(Plot plot) {
-          return null;
-        }
-      });
-      plot1.setRangeBoundaries(0, 10, BoundaryMode.FIXED);
+      plot1.setRangeBoundaries(null, null, BoundaryMode.AUTO);
 
       plot1.getGraph().getGridBackgroundPaint().setColor(Color.WHITE);
       plot1.getGraph().getDomainGridLinePaint().setColor(Color.BLACK);
@@ -108,18 +109,22 @@ public class HistoryGraphFragment extends Fragment {
       plot1.getGraph().setPaddingRight(2);
 
       // draw a domain tick for each year:
-      plot1.setDomainStep(StepMode.SUBDIVIDE, years.length);
+      plot1.setDomainStep(StepMode.SUBDIVIDE, 12);
+      plot1.getGraph().setLinesPerDomainLabel(10);
 
       // customize our domain/range labels
-      plot1.setDomainLabel("Year");
-      plot1.setRangeLabel("# of Sightings");
+      plot1.setDomainLabel("Date");
+      plot1.setRangeLabel("Price per Share");
 
       // get rid of decimal points in our range labels:
-      plot1.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).
-          setFormat(new DecimalFormat("0.0"));
+      plot1.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT)
+          .setFormat(new DecimalFormat("0.0"));
 
-      plot1.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).
-          setFormat(new Format() {
+      plot1.getOuterLimits().set(0, years.length, 0, years.length);
+
+      plot1.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM)
+//          .setFormat(new SimpleDateFormat("MMM yyyy", Locale.US));
+          .setFormat(new Format() {
             private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
 
             @Override
@@ -136,9 +141,10 @@ public class HistoryGraphFragment extends Fragment {
 
             }
           });
+      PanZoom.attach(plot1, Pan.BOTH, Zoom.STRETCH_BOTH);
+      plot1.invalidate();
     });
-
-    return super.onCreateView(inflater, container, savedInstanceState);
+    return view;
   }
 
   @Override

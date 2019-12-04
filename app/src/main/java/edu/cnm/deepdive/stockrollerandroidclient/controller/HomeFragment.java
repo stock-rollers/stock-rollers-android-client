@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +46,7 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
   private StockRecyclerAdapter adapter;
   private FragmentManager fragmentManager;
   private StockFragment stockFragment;
+  private ProgressBar progressBar;
 
   @Nullable
   @Override
@@ -55,15 +57,17 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
     recyclerView = view.findViewById(R.id.stock_list);
     graphFragment = new HistoryGraphFragment();
     stockFragment = new StockFragment();
+    progressBar = getActivity().findViewById(R.id.bar);
+    //progressBar.setVisibility(View.VISIBLE);
     viewModel.getStocks().observe(this, (stocks) -> {
       StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks, this, this);
       recyclerView.setAdapter(newAdapter);
       recyclerView.getAdapter().notifyDataSetChanged();
+      //progressBar.setVisibility(View.INVISIBLE);
     });
 
     ImageView fab = view.findViewById(R.id.fab);
     fab.setOnClickListener((v) -> {
-      viewModel.getHistory();
 
     });
 //    observeViewModel(viewModel);
@@ -94,8 +98,7 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
     FragmentTransaction transaction = manager.beginTransaction();
     transaction.replace(R.id.fragment_container, stockFragment);
     transaction.commit();
-
-
+    Toast.makeText(getActivity(), "Click", Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -104,17 +107,19 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
     inflater.inflate(R.menu.stock_context, menu);
     menu.findItem(R.id.history).setOnMenuItemClickListener((item) -> {
       viewModel.setStock(stock);
+      Fragment historyFragment = new HistoryGraphFragment();
       FragmentManager manager = getFragmentManager();
+      for (int i = 0; i < manager.getBackStackEntryCount(); i++) {
+        manager.popBackStack();
+      }
       FragmentTransaction transaction = manager.beginTransaction();
-      transaction.replace(R.id.fragment_container, graphFragment);
+      transaction.replace(R.id.fragment_container, historyFragment);
       transaction.commit();
-      return true;
+      return false;
     });
     menu.findItem(R.id.update).setOnMenuItemClickListener((item) -> {
-      Toast.makeText(getActivity(), "Click", Toast.LENGTH_LONG);
-      return true;
+      Toast.makeText(getActivity(), "Update", Toast.LENGTH_LONG).show();
+      return false;
     });
-
-    Toast.makeText(getActivity(), "Long Press", Toast.LENGTH_LONG).show();
   }
 }
