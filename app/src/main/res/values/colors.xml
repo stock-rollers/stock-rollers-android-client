@@ -7,7 +7,7 @@
   <color name="dark">#5F5D5D</color>
   <color name="darker">#0E0D0D</color>
   <color name="background">#E4E3E3</color>
-  <color name="yellow">#E7E7E6</color>
-  <color name="company">#2F3131</color>
+  <color name="white">#E7E7E6</color>
+  <color name="company">#292929</color>
   <color name="price">#4BA56E</color>
 </resources>

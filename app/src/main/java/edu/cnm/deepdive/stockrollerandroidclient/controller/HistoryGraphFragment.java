@@ -96,7 +96,7 @@ public class HistoryGraphFragment extends Fragment {
 
       XYSeries series1 = new SimpleXYSeries(Arrays.asList(price), ArrayFormat.Y_VALS_ONLY, "Close Price");
 
-      plot1.addSeries(series1, new LineAndPointFormatter(Color.RED, Color.GREEN, Color.TRANSPARENT, null));
+      plot1.addSeries(series1, new LineAndPointFormatter(Color.DKGRAY, Color.blue(5555), Color.TRANSPARENT, null));
 
       plot1.setRangeBoundaries(null, null, BoundaryMode.AUTO);
 
