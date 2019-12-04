@@ -109,6 +109,14 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     );
   }
 
+  public void getRandom() {
+    pending.add(
+        service.getRandom(getAuthorizationHeader())
+        .subscribeOn(Schedulers.from(executor))
+        .subscribe((stock) -> setStock(stock))
+    );
+  }
+
 
   private String getAuthorizationHeader() {
     String token = getApplication().getString(R.string.oauth_header, googleSignInService.getAccount().getValue().getIdToken());

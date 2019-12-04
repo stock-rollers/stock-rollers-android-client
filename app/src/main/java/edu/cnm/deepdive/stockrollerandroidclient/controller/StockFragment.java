@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
@@ -25,13 +26,18 @@ public class StockFragment extends Fragment {
 
 
   private View view;
+  private ProgressBar progressBar;
   private FloatingActionButton fab;
   private TextView name;
   private TextView price;
   private TextView companyName;
   private TextView yearHigh;
   private TextView yearLow;
+  private boolean showButton;
 
+  public StockFragment (boolean showButton) {
+    this.showButton = showButton;
+  }
 
   @Nullable
   @Override
@@ -39,6 +45,8 @@ public class StockFragment extends Fragment {
       @Nullable Bundle savedInstanceState) {
     database = StockRollersDatabase.getInstance();
     view = inflater.inflate(R.layout.individual_stock, container, false);
+    progressBar = view.findViewById(R.id.waiting_stock);
+    progressBar.setVisibility(View.VISIBLE);
     viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
     name = view.findViewById(R.id.stock_name);
     price = view.findViewById(R.id.stock_price);
@@ -46,6 +54,9 @@ public class StockFragment extends Fragment {
     yearHigh = view.findViewById(R.id.year_high);
     yearLow = view.findViewById(R.id.year_low);
     fab = view.findViewById(R.id.add);
+    if (!showButton) {
+      fab.hide();
+    }
 
     viewModel.getStock().observe(this, (stock) -> {
       OnClickListener listener = new OnClickListener() {
@@ -57,12 +68,15 @@ public class StockFragment extends Fragment {
           }).start();
         }
       };
-      fab.setOnClickListener(listener);
-      name.setText(" (" + stock.getNasdaqName() + ")");
-      price.setText("Price: $ " + stock.getPrice().toString());
-      companyName.setText(stock.getCompany());
-      yearHigh.setText("Year High: " + stock.getFiftyTwoWkHigh().toString());
-      yearLow.setText("Year Low: " + stock.getFiftyTwoWkLow().toString());
+      if (stock != null) {
+        fab.setOnClickListener(listener);
+        name.setText(" (" + stock.getNasdaqName() + ")");
+        price.setText("Price: $ " + stock.getPrice().toString());
+        companyName.setText(stock.getCompany());
+        yearHigh.setText("Year High: " + stock.getFiftyTwoWkHigh().toString());
+        yearLow.setText("Year Low: " + stock.getFiftyTwoWkLow().toString());
+        progressBar.setVisibility(View.GONE);
+      }
     });
     return view;
   }

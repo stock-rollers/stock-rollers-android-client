@@ -32,6 +32,9 @@ public interface StockrollersService {
   @GET("history/{symbol}")
   Flowable<ArrayList<HistoryResponse>> getHistoryForStock(@Header("Authorization") String token, @Path("symbol") String symbol);
 
+  @GET("stocks/random")
+  Single<Stock> getRandom(@Header("Authorization") String token);
+
 
 
   class InstanceHolder {

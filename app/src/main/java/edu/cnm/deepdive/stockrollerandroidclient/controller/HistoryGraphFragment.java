@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -50,6 +51,7 @@ public class HistoryGraphFragment extends Fragment {
   private static final String SERIES_TITLE = "Signthings in USA";
 
   private XYPlot plot1;
+  private ProgressBar progressBar;
   private SimpleXYSeries series;
   private StockRollersDatabase database = StockRollersDatabase.getInstance();
   private MainViewModel viewModel;
@@ -64,6 +66,8 @@ public class HistoryGraphFragment extends Fragment {
     View view = inflater.inflate(R.layout.fragment_history, container, false);
     viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
     plot1 = view.findViewById(R.id.plot);
+    progressBar = view.findViewById(R.id.waiting_history);
+    progressBar.setVisibility(View.VISIBLE);
 
     viewModel.getStock().observe(this, (stock) -> stockId = stock.getId());
 
@@ -142,6 +146,7 @@ public class HistoryGraphFragment extends Fragment {
             }
           });
       PanZoom.attach(plot1, Pan.BOTH, Zoom.STRETCH_BOTH);
+      progressBar.setVisibility(View.GONE);
       plot1.invalidate();
     });
     return view;

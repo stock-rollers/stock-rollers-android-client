@@ -38,13 +38,6 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
   private MainViewModel viewModel;
   private RecyclerView recyclerView;
   private Fragment graphFragment;
-  private StockRollersDatabase database = StockRollersDatabase.getInstance();
-  private final Lock lock = new ReentrantLock();
-  private ArrayList<Stock> stocks = new ArrayList<>();
-  private Stock stockEntity;
-  private Stock stock;
-  private StockRecyclerAdapter adapter;
-  private FragmentManager fragmentManager;
   private StockFragment stockFragment;
   private ProgressBar progressBar;
 
@@ -56,21 +49,25 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
     View view = inflater.inflate(R.layout.fragment_home, container, false);
     recyclerView = view.findViewById(R.id.stock_list);
     graphFragment = new HistoryGraphFragment();
-    stockFragment = new StockFragment();
-    progressBar = getActivity().findViewById(R.id.bar);
-    //progressBar.setVisibility(View.VISIBLE);
+    progressBar = view.findViewById(R.id.waiting_home);
+    progressBar.setVisibility(View.VISIBLE);
     viewModel.getStocks().observe(this, (stocks) -> {
       StockRecyclerAdapter newAdapter = new StockRecyclerAdapter(stocks, this, this);
       recyclerView.setAdapter(newAdapter);
       recyclerView.getAdapter().notifyDataSetChanged();
-      //progressBar.setVisibility(View.INVISIBLE);
+      progressBar.setVisibility(View.GONE);
     });
 
     ImageView fab = view.findViewById(R.id.fab);
     fab.setOnClickListener((v) -> {
-
+      viewModel.setStock(null);
+      viewModel.getRandom();
+      stockFragment = new StockFragment(true);
+      FragmentManager manager = getFragmentManager();
+      FragmentTransaction transaction = manager.beginTransaction();
+      transaction.replace(R.id.fragment_container, stockFragment);
+      transaction.commit();
     });
-//    observeViewModel(viewModel);
     return view;
   }
 
@@ -79,21 +76,10 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
     super.onViewCreated(view, savedInstanceState);
   }
 
-
-
-  private void observeViewModel(MainViewModel viewModel) {
-//    viewModel.getStocks().observe(this, new Observer<List<Stock>>() {
-//      @Override
-//      public void onChanged(List<Stock> stocks) {
-//        adapter.updateStocks(stocks);
-//      }
-//    });
-  }
-
   @Override
   public void onClick(View view, int position, Stock stock) {
     viewModel.setStock(stock);
-    stockFragment = new StockFragment();
+    stockFragment = new StockFragment(false);
     FragmentManager manager = getFragmentManager();
     FragmentTransaction transaction = manager.beginTransaction();
     transaction.replace(R.id.fragment_container, stockFragment);
