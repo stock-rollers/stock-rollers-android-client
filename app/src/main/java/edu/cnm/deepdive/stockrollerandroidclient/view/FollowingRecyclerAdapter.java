@@ -61,6 +61,11 @@ public class FollowingRecyclerAdapter extends RecyclerView.Adapter<FollowingHold
   @Override
   public void onBindViewHolder(@NonNull FollowingHolder holder,
       int position) {
+    if(position % 2 == 0) {
+      holder.itemView.setBackgroundResource(R.color.lightAccent);
+    } else {
+      holder.itemView.setBackgroundResource(R.color.colorAccent);
+    }
     holder.bind(position, names.get(position), following.get(position));
   }
 

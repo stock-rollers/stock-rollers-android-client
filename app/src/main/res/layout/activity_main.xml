@@ -6,7 +6,8 @@
   android:id="@+id/container"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".controller.MainActivity">
+  tools:context=".controller.MainActivity"
+  android:background="@color/background">
 
   <ProgressBar
     android:id="@+id/waiting"
@@ -17,7 +18,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
     android:visibility="visible"
-    android:foregroundTint="@color/colorPrimary"/>
+    android:foregroundTint="@color/lightAccent"/>
 
   <FrameLayout
     android:id="@+id/fragment_container"

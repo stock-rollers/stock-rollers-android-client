@@ -6,7 +6,8 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".controller.SearchFragment">
+  tools:context=".controller.SearchFragment"
+  android:background="@color/background">
 
   <SearchView
     android:id="@+id/search_stock"

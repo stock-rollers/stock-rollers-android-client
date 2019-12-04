@@ -4,7 +4,8 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:tools="http://schemas.android.com/tools"
+  android:background="@color/background">
 
   <TextView
     android:id="@+id/name"
@@ -14,7 +15,8 @@
     app:layout_constraintTop_toTopOf="parent"
     android:textSize="25dp"
     android:textStyle="bold"
-    android:paddingStart="16dp"/>
+    android:paddingStart="16dp"
+    android:textColor="@color/darker"/>
 
   <TextView
     android:id="@+id/number_of_followers"
@@ -24,7 +26,8 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     android:paddingEnd="16dp"
-    android:textSize="25dp"/>
+    android:textSize="25dp"
+    android:textColor="@color/darker"/>
 
 
 

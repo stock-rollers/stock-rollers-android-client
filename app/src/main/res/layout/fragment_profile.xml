@@ -6,7 +6,8 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".controller.ProfileFragment">
+  tools:context=".controller.ProfileFragment"
+  android:background="@color/yellow">
 
 
   <ImageView
@@ -17,7 +18,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    android:paddingTop="15dp"
+    android:paddingTop="4dp"
     />
 
   <TextView
@@ -29,7 +30,8 @@
     app:layout_constraintTop_toBottomOf="@id/profile"
     android:textSize="22dp"
     android:textStyle="bold"
-    android:text="Kevin O’Leary"/>
+    android:text="Kevin O’Leary"
+    android:textColor="@color/darker"/>
 
   <TextView
     android:id="@+id/follower"
@@ -39,7 +41,8 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@id/name"
     android:text="# of followers: 73"
-    android:textSize="22dp"/>
+    android:textSize="22dp"
+    android:textColor="@color/darker"/>
 
   <TextView
     android:id="@+id/followers"
@@ -51,7 +54,8 @@
     android:text="Followers"
     android:textSize="22dp"
     app:layout_constraintHorizontal_bias="0"
-    android:textStyle="bold"/>
+    android:textStyle="bold"
+    android:textColor="@color/darker"/>
 
   <TextView
     android:id="@+id/following"
@@ -64,7 +68,8 @@
     android:textSize="22dp"
     app:layout_constraintHorizontal_bias="0"
     android:textStyle="bold"
-    android:paddingStart="8dp"/>
+    android:paddingStart="8dp"
+    android:textColor="@color/darker"/>
 
   <TextView
     android:id="@+id/follow_number"
@@ -73,7 +78,8 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@id/follower"
     android:text="# of followers"
-    android:textSize="20dp"/>
+    android:textSize="20dp"
+    android:textColor="@color/darker"/>
 
 
   <androidx.recyclerview.widget.RecyclerView
@@ -87,7 +93,8 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
     tools:context=".controller.ProfileFragment"
-    android:layout_marginBottom="10dp"/>
+    android:layout_marginBottom="0dp"
+    />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

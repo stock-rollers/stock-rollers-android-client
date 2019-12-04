@@ -42,13 +42,13 @@ public class ProfileFragment extends Fragment {
    followers = view.findViewById(R.id.followers);
     following = view.findViewById(R.id.following);
 
-    followers.setBackgroundColor(Color.CYAN);
+    followers.setBackgroundResource(R.color.lightAccent);
 
     OnClickListener listener = new OnClickListener() {
       @Override
       public void onClick(View view) {
        recyclerView.setAdapter(adapter);
-       followers.setBackgroundColor(Color.CYAN);
+       followers.setBackgroundResource(R.color.lightAccent);
        following.setBackgroundColor(Color.TRANSPARENT);
        view.invalidate();
       }
@@ -58,7 +58,7 @@ public class ProfileFragment extends Fragment {
       public void onClick(View view) {
         FollowingRecyclerAdapter adapter1 = new FollowingRecyclerAdapter();
         recyclerView.setAdapter(adapter1);
-        following.setBackgroundColor(Color.CYAN);
+        following.setBackgroundResource(R.color.lightAccent);
         followers.setBackgroundColor(Color.TRANSPARENT);
         view.invalidate();
       }

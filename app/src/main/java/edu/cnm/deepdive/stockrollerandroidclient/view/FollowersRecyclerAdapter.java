@@ -1,12 +1,15 @@
 package edu.cnm.deepdive.stockrollerandroidclient.view;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
+import edu.cnm.deepdive.stockrollerandroidclient.controller.ProfileFragment;
 import edu.cnm.deepdive.stockrollerandroidclient.view.FollowersRecyclerAdapter.FollowersHolder;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +34,11 @@ public class FollowersRecyclerAdapter extends RecyclerView.Adapter<FollowersHold
       names.add("Warren Buffet");
       this.followers = new ArrayList<String>();
       followers.add("39");
-      followers.add("3442");
+      followers.add("3,442");
       followers.add("1,206,614");
       followers.add("98");
       followers.add("1,022");
-      followers.add("-23");
+      followers.add("-234");
       followers.add("869,427");
       followers.add("1,337");
       followers.add("1,477,608");
@@ -54,6 +57,11 @@ public class FollowersRecyclerAdapter extends RecyclerView.Adapter<FollowersHold
   @Override
   public void onBindViewHolder(@NonNull FollowersHolder holder, int position) {
    String name = names.get(position);
+   if(position % 2 == 0) {
+     holder.itemView.setBackgroundResource(R.color.lightAccent);
+   } else {
+     holder.itemView.setBackgroundResource(R.color.colorAccent);
+   }
     holder.bind(position, name, followers.get(position));
   }
 
