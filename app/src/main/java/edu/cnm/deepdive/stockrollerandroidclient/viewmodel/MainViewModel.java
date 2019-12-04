@@ -71,6 +71,10 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     this.account.setValue(account);
   }
 
+  public void deleteStock(Stock stock) {
+    new Thread(() -> database.getStockDao().delete(stock));
+  }
+
   public void getStock(String ticker) {
     String token = getAuthorizationHeader();
       pending.add(
@@ -85,6 +89,20 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
                 }
               })
       );
+  }
+
+  public void updateStock(Stock stock) {
+    String token = getAuthorizationHeader();
+    pending.add(
+        service.getStock(token, stock.getNasdaqName())
+        .subscribeOn(Schedulers.from(executor))
+        .subscribe((s) -> {
+          stock.setFiftyTwoWkHigh(s.getFiftyTwoWkHigh());
+          stock.setFiftyTwoWkLow(s.getFiftyTwoWkLow());
+          stock.setPrice(s.getPrice());
+          database.getStockDao().update(stock);
+        })
+    );
   }
 
   public void getHistory(Stock stock) {

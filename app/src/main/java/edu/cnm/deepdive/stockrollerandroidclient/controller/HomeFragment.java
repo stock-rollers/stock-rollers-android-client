@@ -103,8 +103,12 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
       transaction.commit();
       return false;
     });
+    menu.findItem(R.id.delete).setOnMenuItemClickListener((item) -> {
+      viewModel.deleteStock(stock);
+      return false;
+    });
     menu.findItem(R.id.update).setOnMenuItemClickListener((item) -> {
-      Toast.makeText(getActivity(), "Update", Toast.LENGTH_LONG).show();
+      viewModel.updateStock(stock);
       return false;
     });
   }

@@ -31,8 +31,5 @@ public interface StockDao {
   LiveData<List<Stock>> search(String nasdaqName);
 
   @Delete
-  int delete(Stock stock);
-
-  @Delete
   int delete(Stock... stocks);
 }
