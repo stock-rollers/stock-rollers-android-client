@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.stockrollerandroidclient.view;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -48,6 +49,9 @@ public class StockRecyclerAdapter extends RecyclerView.Adapter<StockHolder>{
   @Override
   public void onBindViewHolder(@NonNull StockHolder holder, int position) {
     Stock stock = stocks.get(position);
+    if(position % 2 == 0) {
+      holder.itemView.setBackgroundResource(R.color.mediumDark);
+    }
     holder.bind(position, stock);
   }
 
