@@ -13,7 +13,7 @@ import java.time.LocalDate;
             entity = Stock.class,
             childColumns = "stock_id",
             parentColumns = "stock_id",
-            onDelete = ForeignKey.RESTRICT
+            onDelete = ForeignKey.CASCADE
         )
     }
 )
@@ -23,11 +23,11 @@ public class History {
   @ColumnInfo(name = "history_id")
   private Long id;
 
+  @ColumnInfo(name = "stock_id", index = true)
+  private Long stockId;
+
   @ColumnInfo(name = "date")
   private LocalDate date;
-
-  @ColumnInfo(name = "stock_id")
-  private Long stockId;
 
   @ColumnInfo(name = "open")
   private float open;

@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * Basic View Model class that handles the current stock that the UI is working with
+ */
 public class MainViewModel extends AndroidViewModel implements LifecycleObserver {
 
   private Executor executor;
@@ -38,6 +41,10 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
   private final MutableLiveData<GoogleSignInAccount> account;
 
 
+  /**
+   * Setup of all of the livedata objects aswell as creating the executor and Composite Disposal
+   * @param application context to keep viewModels the same across the fragments
+   */
   public MainViewModel(@NonNull Application application) {
     super(application);
     executor = Executors.newSingleThreadExecutor();
@@ -51,30 +58,59 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     googleSignInService = GoogleSignInService.getInstance();
   }
 
+  /**
+   * Get the current stock that the View Model has
+   * @return liveData object holding current stock
+   */
   public LiveData<Stock> getStock() {
     return stock;
   }
 
+  /**
+   * Set the stock that the View Model is handling
+   * @param stock that you want the view model hold
+   */
   public void setStock(Stock stock) {
     this.stock.postValue(stock);
   }
 
+  /**
+   * Gets all of the stocks from the database
+   * @return LiveData of a list of all of the stocks
+   */
   public LiveData<List<Stock>> getStocks() {
     return database.getStockDao().getAll();
   }
 
+  /**
+   * Gets all of the history it has for the stock that the viewModel is holding
+   * @return LiveData of a List of Histories for the current stock
+   */
   public LiveData<List<History>> getHistory() {
     return database.getHistoryDao().getAllByStockId(stock.getValue().getId());
   }
 
+  /**
+   * Sets the account of the user in the viewModel
+   * @param account of the user
+   */
   public void setAccount(GoogleSignInAccount account) {
     this.account.setValue(account);
   }
 
+  /**
+   * Removes a stock from the database
+   * @param stock you want to delete
+   */
   public void deleteStock(Stock stock) {
-    new Thread(() -> database.getStockDao().delete(stock));
+    new Thread(() -> database.getStockDao().delete(stock)).start();
   }
 
+  /**
+   * Makes an API call if  you do not already have the specified stock in your database.
+   * Otherwise it will return the stock from your database.
+   * @param ticker
+   */
   public void getStock(String ticker) {
     String token = getAuthorizationHeader();
       pending.add(
@@ -91,10 +127,15 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
       );
   }
 
+  /**
+   * Will make another call for a stock to update its values.
+   * CURRENTLY NOT WORKING
+   * @param stock
+   */
   public void updateStock(Stock stock) {
     String token = getAuthorizationHeader();
     pending.add(
-        service.getStock(token, stock.getNasdaqName())
+        service.updateStock(token, stock.getNasdaqName())
         .subscribeOn(Schedulers.from(executor))
         .subscribe((s) -> {
           stock.setFiftyTwoWkHigh(s.getFiftyTwoWkHigh());
@@ -105,6 +146,10 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     );
   }
 
+  /**
+   * Gets the history for the specified stock and saves it in the database.
+   * @param stock you want to  get the history for
+   */
   public void getHistory(Stock stock) {
     String token = getAuthorizationHeader();
     pending.add(
@@ -127,6 +172,9 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     );
   }
 
+  /**
+   * Makes a call to the API for a random stock and sets it as the current stock the  View Model is working with
+   */
   public void getRandom() {
     pending.add(
         service.getRandom(getAuthorizationHeader())

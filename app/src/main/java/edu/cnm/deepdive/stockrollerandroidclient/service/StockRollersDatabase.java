@@ -12,6 +12,9 @@ import edu.cnm.deepdive.stockrollerandroidclient.model.entity.History;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import java.time.LocalDate;
 
+/**
+ * Simple Database class to handle saving, querying, and deleting items from
+ */
 @Database(
   entities = {Stock.class, History.class},
   version = 1, exportSchema = true
@@ -19,21 +22,40 @@ import java.time.LocalDate;
 @TypeConverters(StockRollersDatabase.Converters.class)
 public abstract class StockRollersDatabase extends RoomDatabase {
 
+  /**
+   * Constructor currently does nothing
+   */
   protected StockRollersDatabase() {
   }
 
   private static Application applicationContext;
 
+  /**
+   * Give the database an application
+   * @param applicationContext
+   */
   public static void setApplicationContext(Application applicationContext) {
     StockRollersDatabase.applicationContext = applicationContext;
   }
 
+  /**
+   * Returns a Single Instancce of the database
+   * @return
+   */
   public static StockRollersDatabase getInstance() {
     return InstanceHolder.INSTANCE;
   }
 
+  /**
+   * gets the HistoryDao
+   * @return
+   */
   public abstract HistoryDao getHistoryDao();
 
+  /**
+   * Gets the StockDao
+   * @return
+   */
   public abstract StockDao getStockDao();
 
   private static class InstanceHolder {
@@ -47,6 +69,9 @@ public abstract class StockRollersDatabase extends RoomDatabase {
     }
   }
 
+  /**
+   * Type converters for date and string object
+   */
   public static class Converters {
 
     @TypeConverter

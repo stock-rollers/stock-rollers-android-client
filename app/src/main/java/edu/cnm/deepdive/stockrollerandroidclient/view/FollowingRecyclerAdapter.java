@@ -12,12 +12,17 @@ import edu.cnm.deepdive.stockrollerandroidclient.view.FollowingRecyclerAdapter.F
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Simple RecyclerAdapter to display who the User is Following
+ */
 public class FollowingRecyclerAdapter extends RecyclerView.Adapter<FollowingHolder> {
 
   private List<String> names;
   private List<String> following;
 
+  /**
+   * In the future you will specify your own list to show
+   */
   public FollowingRecyclerAdapter() {
     this.names = new ArrayList<String>();
     names.add("Elon Musk");
@@ -50,6 +55,12 @@ public class FollowingRecyclerAdapter extends RecyclerView.Adapter<FollowingHold
     following.add("74,608");
   }
 
+  /**
+   * Defualt onCreateViewHolder that inflates the list_profile xml file
+   * @param parent of the adapter
+   * @param viewType for the adapter
+   * @return the FollowerHolder view
+   */
   @NonNull
   @Override
   public FollowingHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -58,6 +69,11 @@ public class FollowingRecyclerAdapter extends RecyclerView.Adapter<FollowingHold
     return new FollowingHolder(view);
   }
 
+  /**
+   * Binds each list item to a follower and displays that followers information
+   * @param holder of the Adapter
+   * @param position current position  in the list of elements
+   */
   @Override
   public void onBindViewHolder(@NonNull FollowingHolder holder,
       int position) {
@@ -69,18 +85,27 @@ public class FollowingRecyclerAdapter extends RecyclerView.Adapter<FollowingHold
     holder.bind(position, names.get(position), following.get(position));
   }
 
-
+  /**
+   * @return size of the list the adapter is working with
+   */
   @Override
   public int getItemCount() {
     return names.size();
   }
 
+  /**
+   * Simple RecyclerView.ViewHolder for our adapter class
+   */
   public class FollowingHolder extends RecyclerView.ViewHolder {
 
     private final View view;
     public TextView name;
     private TextView number;
 
+    /**
+     * Connects the TextViews to xml items
+     * @param itemView of the adapter
+     */
     public FollowingHolder(@NonNull View itemView) {
       super(itemView);
       name = itemView.findViewById(R.id.name);

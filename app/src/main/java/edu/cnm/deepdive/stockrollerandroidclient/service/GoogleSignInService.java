@@ -72,13 +72,13 @@ public class GoogleSignInService {
 
   public Task<GoogleSignInAccount> completeSignIn(Intent data) {
     Task<GoogleSignInAccount> task = null;
-    try {
-      task = GoogleSignIn.getSignedInAccountFromIntent(data);
-      account.setValue(task.getResult(ApiException.class));
-    } catch (ApiException e) {
-      Log.d("GoogleSignIn", e.getMessage(), e);
-      update(e);
-    }
+//    try {
+//      task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//      account.setValue(task.getResult(ApiException.class));
+//    } catch (ApiException e) {
+//      Log.d("GoogleSignIn", e.getMessage(), e);
+//      update(e);
+//    }
     return task;
   }
 

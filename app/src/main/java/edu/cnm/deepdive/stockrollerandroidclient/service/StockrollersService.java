@@ -20,23 +20,58 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
 
+/**
+ * Class to query our Server Application with HTTP
+ */
 public interface StockrollersService {
 
+  /**
+   * Uses a Single Instance
+   * @return single instance of StockrollersService
+   */
   static StockrollersService getInstance() {
     return InstanceHolder.INSTANCE;
   }
 
+  /**
+   * Querys the server for a stock object
+   * @param token Authorization header
+   * @param symbol Stock ticker
+   * @return Single Stock object
+   */
   @GET("stocks/{symbol}")
   Single<Stock> getStock(@Header("Authorization") String token, @Path("symbol") String symbol);
 
+  /**
+   * Gets A list of History objects for the specified ticker
+   * @param token Authorization header
+   * @param symbol Stock ticker
+   * @return Flowable List of History Objects
+   */
   @GET("history/{symbol}")
   Flowable<ArrayList<HistoryResponse>> getHistoryForStock(@Header("Authorization") String token, @Path("symbol") String symbol);
 
+  /**
+   * Querys the server for a random Stock
+   * @param token Authorization Header
+   * @return Single Stock
+   */
   @GET("stocks/random")
   Single<Stock> getRandom(@Header("Authorization") String token);
 
+  /**
+   * Updates the stock on the server and gets back the updated data.
+   * @param token Authorization Header
+   * @param symbol Stock ticker
+   * @return
+   */
+  @GET("stocks/update/{symbol}")
+  Single<Stock> updateStock(@Header("Authorization") String token, @Path("symbol") String symbol);
 
-
+  /**
+   * Holds the Instance of the StockRollersService class.
+   * One and only one should  be  present.
+   */
   class InstanceHolder {
 
     private static final StockrollersService INSTANCE;

@@ -31,6 +31,7 @@ import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.XYSeriesFormatter;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.History;
+import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
 import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
 import java.text.DecimalFormat;
@@ -46,12 +47,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Fragment Class Setup to show a Stocks History
+ */
 public class HistoryGraphFragment extends Fragment {
 
   private static final String SERIES_TITLE = "Signthings in USA";
 
   private XYPlot plot1;
   private ProgressBar progressBar;
+  private Stock stock;
   private SimpleXYSeries series;
   private StockRollersDatabase database = StockRollersDatabase.getInstance();
   private MainViewModel viewModel;
@@ -59,6 +64,19 @@ public class HistoryGraphFragment extends Fragment {
   private List<History> histories;
   private List<LocalDate> dates;
 
+  /**
+   * This Class does may more that it should.
+   * It Inflates the History Fragment.
+   * Maps A Plot to the fragment.
+   * Then grabs the data from the database based on the ViewModels Current Stock.
+   * Then Converts Dates into positions.
+   * Attaches a panZoom to the Plot.
+   * Invalidates the view to re draw.
+   * @param inflater gives the fragment a way to inflate the fragment
+   * @param container where the view is going to reside
+   * @param savedInstanceState if it had one
+   * @return
+   */
   @Nullable
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -69,7 +87,10 @@ public class HistoryGraphFragment extends Fragment {
     progressBar = view.findViewById(R.id.waiting_history);
     progressBar.setVisibility(View.VISIBLE);
 
-    viewModel.getStock().observe(this, (stock) -> stockId = stock.getId());
+    viewModel.getStock().observe(this, (stock) -> {
+      stockId = stock.getId();
+      this.stock = stock;
+    });
 
     viewModel.getHistory().observe(this, (histories) -> {
       this.histories = histories;
@@ -111,6 +132,8 @@ public class HistoryGraphFragment extends Fragment {
       plot1.getGraph().getRangeOriginLinePaint().setColor(Color.BLACK);
 
       plot1.getGraph().setPaddingRight(2);
+
+      plot1.setTitle(stock.getNasdaqName());
 
       // draw a domain tick for each year:
       plot1.setDomainStep(StepMode.SUBDIVIDE, 12);

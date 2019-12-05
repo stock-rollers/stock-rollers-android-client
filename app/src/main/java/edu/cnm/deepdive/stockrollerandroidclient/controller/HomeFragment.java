@@ -6,8 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -16,22 +14,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.cnm.deepdive.stockrollerandroidclient.R;
 import edu.cnm.deepdive.stockrollerandroidclient.model.entity.Stock;
-import edu.cnm.deepdive.stockrollerandroidclient.service.StockRollersDatabase;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.OnClickListener;
 import edu.cnm.deepdive.stockrollerandroidclient.view.StockRecyclerAdapter.OnContextListener;
 import edu.cnm.deepdive.stockrollerandroidclient.viewmodel.MainViewModel;
-import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class HomeFragment extends Fragment  implements OnContextListener, OnClickListener {
 
@@ -95,9 +85,6 @@ public class HomeFragment extends Fragment  implements OnContextListener, OnClic
       viewModel.setStock(stock);
       Fragment historyFragment = new HistoryGraphFragment();
       FragmentManager manager = getFragmentManager();
-      for (int i = 0; i < manager.getBackStackEntryCount(); i++) {
-        manager.popBackStack();
-      }
       FragmentTransaction transaction = manager.beginTransaction();
       transaction.replace(R.id.fragment_container, historyFragment);
       transaction.commit();

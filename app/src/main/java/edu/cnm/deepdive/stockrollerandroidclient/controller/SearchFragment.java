@@ -45,6 +45,7 @@ public class SearchFragment extends Fragment {
       public boolean onQueryTextSubmit(String s) {
         stockSearch.clearFocus();
         viewModel.setStock(null);
+        s = s.toUpperCase();
         viewModel.getStock(s);
         Fragment fragment = new StockFragment(true);
         FragmentManager manager = getFragmentManager();
